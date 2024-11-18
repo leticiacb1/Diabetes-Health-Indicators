@@ -2,9 +2,6 @@
 venv/
 .env
 
-# Data
-data/*.csv
-
 # IDEA
 .idea/
 

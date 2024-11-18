@@ -65,13 +65,26 @@ Configure your AWS credentials:
 
 After this the URL of the file upload is : `https://<bucket-name>.s3.<region>.amazonaws.com/<key>`
 
-> Data URL =  https://mlops-project-diabetes-data-bucket.s3.us-east-2.amazonaws.com/diabetes_binary_health_indicators_BRFSS2015.csv
-
-**Configure data versioning - (DVC)[https://dvc.org/]**
+> Data URL =  `https://mlops-project-diabetes-data-bucket.s3.us-east-2.amazonaws.com/diabetes_binary_health_indicators_BRFSS2015.csv`
 
 ```bash
+  # Check files in bucket
+  $ aws s3 ls s3://mlops-project-diabetes-data-bucket/
+  # Check if the file is acessible
+  $ curl -O https://mlops-project-diabetes-data-bucket.s3.us-east-2.amazonaws.com/diabetes_binary_health_indicators_BRFSS2015.csv
+```
+
+**Configure data versioning - [DVC](https://dvc.org/)**
+
+```bash
+ # Init dvc repository
  $ dvc init
- $ dvc get-url <data-bucket-url> data/diabetes_data.csv
+ 
+ # Pre-signed URL for access the private bucket 
+ $ aws s3 presign s3://mlops-project-diabetes-data-bucket/diabetes_binary_health_indicators_BRFSS2015.csv
+ $ dvc get-url <generated-presigned-url> data/diabetes_data.csv
+
+ # dvc to track data/
  $ dvc add data/diabetes_data.csv
 ```
 
