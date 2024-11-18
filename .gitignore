@@ -2,5 +2,11 @@
 venv/
 .env
 
+# Data
+data/*.csv
+
 # IDEA
 .idea/
+
+# Pycache
+__pycache__/
