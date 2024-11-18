@@ -91,15 +91,30 @@ After this the URL of the file upload is : `https://<bucket-name>.s3.<region>.am
 Create a dvc bucket:
 
 ```bash
- $ python -m src.utils.dvc_bucket
+ # Create dvc bucket
+ $ python -m src.utils.create_dvc_bucket
+ 
+ # Check if bucket was created
+ $ aws s3 ls 
 ```
 
 Add S3 in dvc:
 
 ```bash
-  $ dvc remote add myremote s3://<dvc-bucket-name>
+  $ dvc remote add myremote s3://mlops-project-diabetes-dvc-bucket
   $ dvc remote default myremote
   $ dvc push
+  
+  # Check if myremote was add:
+  $ dvc remote list
+  
+  # Check if the file was upload in bucket sync with dvc:
+  $ dvc status
+  $ aws s3 ls s3://mlops-project-diabetes-dvc-bucket/files/ --recursive
+  
+  # I you want you can delete the diabetes_data.csv and check if dvc restore the file 
+  $ rm -rf data/diabetes_data.csv
+  $ dvc pull # Is expected that the file data/diabetes_data.csv be restored
 ```
 
 
