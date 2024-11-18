@@ -114,7 +114,7 @@ Add S3 in dvc:
   
   # I you want you can delete the diabetes_data.csv and check if dvc restore the file 
   $ rm -rf data/diabetes_data.csv
-  $ dvc pull # Is expected that the file data/diabetes_data.csv be restored
+  $ dvc pull # Checkt the file data/diabetes_data.csv been restaured
 ```
 
 
