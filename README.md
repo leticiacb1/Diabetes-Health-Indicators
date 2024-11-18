@@ -52,7 +52,7 @@ Configure your AWS credentials:
 
 ### 📌 How this project was build
 
-1. Data Versioning
+#### 1. Data Versioning
 
 **Upload the dataset file in a S3 Bucket**
 
@@ -114,7 +114,26 @@ Add S3 in dvc:
   
   # I you want you can delete the diabetes_data.csv and check if dvc restore the file 
   $ rm -rf data/diabetes_data.csv
-  $ dvc pull # Checkt the file data/diabetes_data.csv been restaured
+  $ dvc pull # Check the file data/diabetes_data.csv been restaured
+```
+
+#### 2. Sagemaker (Exploratory Analysis)
+
+Create a notebook instance to use :
+
+```bash
+ # Create 
+ # ROLE_ARN value in config/.env file
+ $ aws sagemaker create-notebook-instance \
+                    --notebook-instance-name "mlops-project-diabetes-exp-note" \
+                    --role-arn <ROLE_ARN> \
+                    --instance-type "ml.t2.medium" \
+                    --volume-size-in-gb 10
+
+ # Wait unil status change to "InService"
+ $ aws sagemaker describe-notebook-instance --notebook-instance-name "mlops-project-diabetes-exp-note"
+ 
+ # Acess the Url returned form this command on browser
 ```
 
 
