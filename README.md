@@ -137,11 +137,7 @@ Create a notebook instance to use :
 ```
 For this project, the notebooks are in : https://mlops-project-diabetes-exp-note-hgae.notebook.us-east-2.sagemaker.aws/lab
 
-Download the sagemaker exploratory analysis notebook in the `src/notebooks` folder:
-
-```bash
-
-```
+The jupyter notebook in AWS Sagemaker with the exploratory analysis was downloaded to the `src/notebooks` folder.
 
 #### 3. Configure CI-CD (Github workflows)
 

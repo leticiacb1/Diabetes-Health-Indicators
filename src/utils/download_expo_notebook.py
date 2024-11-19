@@ -5,7 +5,7 @@
 # s3 = boto3.client('s3')
 #
 # # Define the S3 path of the notebook and local path to save
-# s3_bucket = 'your-bucket-name'
+# s3_bucket = 'mlops-project-diabetes-dvc-bucket'
 # s3_key = 'path/to/your/notebook.ipynb'
 # local_path = './local_folder/notebook.ipynb'
 #
