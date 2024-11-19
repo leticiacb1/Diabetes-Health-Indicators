@@ -92,6 +92,7 @@ Create a dvc bucket:
 
 ```bash
  # Create dvc bucket
+ # Root folder
  $ python -m src.utils.create_dvc_bucket
  
  # Check if bucket was created
@@ -136,6 +137,12 @@ Create a notebook instance to use :
 ```
 For this project, the notebooks are in : https://mlops-project-diabetes-exp-note-hgae.notebook.us-east-2.sagemaker.aws/lab
 
+Download the sagemaker exploratory analysis notebook in the `src/notebooks` folder:
+
+```bash
+
+```
+
 #### 3. Configure CI-CD (Github workflows)
 
 #### 4. Documentation
@@ -145,6 +152,20 @@ For this project, the notebooks are in : https://mlops-project-diabetes-exp-note
 #### 6. Monitoring
 
 ### 📌 How to use this project
+
+Make sure your data folder is up to date with dvc:
+```bash
+ $ dvc status
+ $ dvc pull
+```
+
+To run the scripts separately:
+```bash
+ # Root folder 
+ $ python -m src.preprocess
+ $ python -m src.train
+```
+
 
 <div align="center">
     <br>

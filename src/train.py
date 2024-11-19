@@ -11,15 +11,7 @@ import seaborn as sns
 # Modeling
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import from sklearn.metrics import (
-    confusion_matrix,
-    accuracy_score,
-    f1_score,
-    mean_absolute_error,
-    mean_squared_error,
-    r2_score
-)
-
+from sklearn.metrics import confusion_matrix, accuracy_score, f1_score, mean_absolute_error, mean_squared_error, r2_score
 
 TEST_SIZE = 0.3
 RANDOM_STATE = 1912
