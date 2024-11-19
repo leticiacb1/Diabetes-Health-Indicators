@@ -24,14 +24,15 @@ from sklearn.metrics import from sklearn.metrics import (
 TEST_SIZE = 0.3
 RANDOM_STATE = 1912
 
-def load_data(data_path: str) -> pd.DataFrame:
+def load_parquet_data(file_path: str) -> pd.DataFrame:
     '''
     Load data from .parquet file.
 
-    :param data_path: path where the file is located
+    :param file_path: location where the file will be saved
     :return: dataframe with file content
     '''
-    df = pd.read_parquet(data_path)
+    df = pd.read_parquet(file_path)
+    # TODO: Adicionar prints e logs
     return df
 
 def split_data(features_data: pd.DataFrame, target_date: pd.Series) -> (pd.DataFrame, pd.DataFrame, pd.Series, pd.Series):
@@ -40,24 +41,25 @@ def split_data(features_data: pd.DataFrame, target_date: pd.Series) -> (pd.DataF
 
     :param features_data: dataframe with features values
     :param target_date: series with target values
-    :return: data splited
+    :return: split data
     '''
     X_train, X_test, y_train, y_test = train_test_split(
         features_data, target_date, test_size=TEST_SIZE, random_state=RANDOM_STATE
     )
-
+    # TODO: Adicionar prints e logs
     return X_train, X_test, y_train, y_test
 
 
-def find_best_model_solver(logistic_regression_solvers, X_train, y_train, X_test, y_test):
+def find_best_solver(logistic_regression_solvers, X_train, y_train, X_test, y_test) -> str :
     '''
+    Find the best solver for Logistic Regression
 
-    :param logistic_regression_solvers:
-    :param X_train:
-    :param y_train:
-    :param X_test:
-    :param y_test:
-    :return:
+    :param logistic_regression_solvers: list with logistic regression solvers
+    :param X_train: dataframe with feature value from training set
+    :param y_train: series with the train set target values
+    :param X_test: dataframe with feature value from test set
+    :param y_test: series with the test set target values
+    :return: best solver obtained
     '''
     train_score_values = {}
     best_slover = ''
@@ -69,29 +71,32 @@ def find_best_model_solver(logistic_regression_solvers, X_train, y_train, X_test
         if train_score_values[n] >= max(train_score_values.values()):
             best_slover = n
 
-    return best_slover, train_score_values
+    # TODO: Adicionar prints e logs
+    return best_slover
 
 
 def train(X_train: pd.DataFrame, y_train: pd.Series, best_solver: str):
     '''
     Train Logistic Regression Model.
 
-    :param X_train: dataframe with features value for train
-    :param y_train: series with target values for train
+    :param X_train: dataframe with feature value from training set
+    :param y_train: series with the train set target values
     :return: Logistic Regression Model
     '''
     model = LogisticRegression(solver=best_solver)
     model.fit(X_train, y_train)
+    # TODO: Adicionar prints e logs
     return model
 
 def save_results(model, file_path: str, y_test: pd.Series, y_pred: pd.Series) -> None:
     '''
+    Save performance results in a file_path
 
-    :param model:
-    :param file_path:
-    :param y_test:
-    :param y_pred:
-    :return:
+    :param model: model used in training
+    :param file_path: path where the results will be saved
+    :param y_test: series with the test set target values
+    :param y_pred: series with the values predicted by the model
+    :return: None
     '''
     accuracy = accuracy_score(y_test, y_pred)
     f1 = f1_score(y_test, y_pred, average="weighted")
@@ -105,13 +110,15 @@ def save_results(model, file_path: str, y_test: pd.Series, y_pred: pd.Series) ->
     )
 
     results_df.to_csv(file_path, index=False)
+    # TODO: Adicionar prints e logs
 
-def save_confusion_matrix(model, y_test: pd.Series, y_pred: pd.Series) -> None:
+def save_confusion_matrix(model, y_test: pd.Series, y_pred: pd.Series, file_path: str) -> None:
     '''
+    Save model confusion matrix.
 
-    :param model:
-    :param y_test:
-    :param y_pred:
+    :param model: model used in training
+    :param y_test: series with the test set target values
+    :param y_pred: series with the values predicted by the model
     :return:
     '''
     cm = confusion_matrix(y_test, y_pred)
@@ -125,32 +132,53 @@ def save_confusion_matrix(model, y_test: pd.Series, y_pred: pd.Series) -> None:
     plt.title("Confusion Matrix")
     plt.xlabel("Predicted Labels")
     plt.ylabel("True Labels")
-    plt.savefig("results/confusion_matrix.png")
+    plt.savefig(file_path)
     plt.close()
+
+    # TODO: Adicionar prints e logs
 
 def save_model(model, file_path: str) -> None:
     '''
     Save model in a .pickle file.
 
-    :param model: Model used for training.
-    :param file_path: Path wher model will be saved
+    :param model: model used in training
+    :param file_path: location where the file will be saved
     :return: None
     '''
     with open(file_path, "wb") as f:
         pickle.dump(model, f)
 
+    # TODO: Adicionar prints e logs
+
 if __name__ == "__main__":
-    pass
-    # df = load_data()
-    # X_train, X_test, y_train, y_test = split(df)
-    # ohe = train_ohe(X_train)
-    # X_train = ohe.transform(X_train)
-    # X_test = ohe.transform(X_test)
-    #
-    # model = train(X_train, y_train)
-    # y_pred = model.predict(X_test)
-    #
-    # export_results(model, X_test, y_test, y_pred)
-    # export_confusion_matrix(model, y_test, y_pred)
-    # export_model(ohe, "models/ohe.pickle")
-    # export_model(model, "models/model.pickle")
+
+    # ---- Variáveis ----
+    target_column_name = 'Diabetes_binary'
+
+    logistic_regression_solvers = ['lbfgs', 'liblinear', 'newton-cg', 'newton-cholesky', 'sag', 'saga']
+
+    prepro_feature_data_path = 'data/diabetes_feature_data.parquet'
+    prepro_target_data_path = 'data/diabetes_target_data.parquet'
+
+    model_path =  'models/logistic_regression.parquet'
+    confusion_matrix_path = 'results/confusion_matrix.png'
+    model_metrics_path = 'results/model_test_metrics.csv'
+
+    # Load preprocess data
+    df_features = load_parquet_data(prepro_feature_data_path)
+    df_target = load_parquet_data(prepro_target_data_path)
+
+    # Split data
+    X_train, X_test, y_train, y_test = split_data(df_features, df_target[target_column_name])
+
+    # Train model
+    best_solver = find_best_solver(logistic_regression_solvers, X_train, y_train, X_test, y_test)
+    logistic_regression_model = train(X_train, y_train, best_solver)
+
+    # Predict
+    y_pred = logistic_regression_model.predict(X_test)
+
+    # Save
+    save_model(logistic_regression_model, model_path)
+    save_confusion_matrix(logistic_regression_model, y_test, y_pred, confusion_matrix_path)
+    save_results(logistic_regression_model, model_metrics_path, y_test, y_pred)

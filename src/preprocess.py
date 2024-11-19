@@ -26,6 +26,8 @@ def remove_duplicate_lines(df: pd.DataFrame) -> pd.DataFrame:
     n_duplicates = df.duplicated().sum()
     print(f" [INFO] Number of duplicate values = {n_duplicates}\n")
     df_no_duplicates = df.drop_duplicates()
+
+    # TODO: Adicionar prints e logs
     return df_no_duplicates
 
 def save_parquet(df: pd.DataFrame, data_path: str) -> None:
@@ -37,6 +39,7 @@ def save_parquet(df: pd.DataFrame, data_path: str) -> None:
     :return:
     '''
     df.to_parquet(data_path)
+    # TODO: Adicionar prints e logs
 
 if __name__ == "__main__":
     # Target column
