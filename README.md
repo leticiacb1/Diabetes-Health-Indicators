@@ -121,25 +121,30 @@ Add S3 in dvc:
 
 Create a notebook instance to use :
 
-```bash
- # Create 
- # ROLE_ARN value in config/.env file
+```bash 
+ # ROLE_ARN that have permission for Sagemaker in AWS (possible the value in config/.env file)
  $ aws sagemaker create-notebook-instance \
                     --notebook-instance-name "mlops-project-diabetes-exp-note" \
-                    --role-arn <ROLE_ARN> \
+                    --role-arn "ROLE_ARN" \
                     --instance-type "ml.t2.medium" \
                     --volume-size-in-gb 10
 
- # Wait unil status change to "InService"
+ # Wait unil Status change to "InService"
  $ aws sagemaker describe-notebook-instance --notebook-instance-name "mlops-project-diabetes-exp-note"
  
- # Acess the Url returned form this command on browser
+ # Access the Url returned form this command on browser
 ```
+For this project, the notebooks are in : https://mlops-project-diabetes-exp-note-hgae.notebook.us-east-2.sagemaker.aws/lab
 
+#### 3. Configure CI-CD (Github workflows)
+
+#### 4. Documentation
+
+#### 5. Logging
+
+#### 6. Monitoring
 
 ### 📌 How to use this project
-
-
 
 <div align="center">
     <br>
