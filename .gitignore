@@ -4,6 +4,7 @@ venv/
 
 # Data
 data/*.csv
+data/*.parquet
 
 # IDEA
 .idea/
