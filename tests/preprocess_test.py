@@ -3,7 +3,6 @@ import pandas as pd
 from io import StringIO
 from preprocess import preprocess, remove_duplicate_lines, save_parquet
 
-
 @pytest.fixture
 def sample_csv():
     """Fixture to provide sample CSV data."""

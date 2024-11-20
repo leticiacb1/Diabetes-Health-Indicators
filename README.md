@@ -162,6 +162,11 @@ To run the scripts separately:
  $ python -m src.train
 ```
 
+Run tests:
+```bash
+ # Root folder
+ $  pytest
+```
 
 <div align="center">
     <br>
