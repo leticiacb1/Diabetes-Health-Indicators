@@ -141,7 +141,18 @@ The jupyter notebook in AWS Sagemaker with the exploratory analysis was download
 
 #### 3. Configure CI-CD (Github workflows)
 
+The `.github/workflows/workflow.yaml` folder contains the file with the pipeline sets and stages.
+
 #### 4. Documentation
+
+**Sphinx**  generate auto documentation for the project. 
+
+```bash
+  # If any change on docs/ folder rebuild the documentation:
+  $ cd docs/ && make html 
+```
+
+To access the porject documentation open the file : `docs/_build/html/index.html`
 
 #### 5. Logging
 
