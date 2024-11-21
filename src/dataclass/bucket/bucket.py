@@ -1,6 +1,7 @@
 import boto3
 
 from config.config import Config
+from botocore.exceptions import ClientError
 
 class Bucket():
 
@@ -24,19 +25,31 @@ class Bucket():
         Create a S3 bucket in AWS using the credentials in .env file
         :return: None
         '''
-        self.s3_client.create_bucket(
-            Bucket=self.bucket_name,
-            CreateBucketConfiguration={"LocationConstraint": self.config.REGION},
-        )
 
-        print("\n    [INFO] Create a S3 Bucket in AWS. \n")
+        try:
+            self.s3_client.create_bucket(
+                Bucket=self.bucket_name,
+                CreateBucketConfiguration={"LocationConstraint": self.config.REGION},
+            )
+            print("\n [INFO] Create a S3 Bucket successfully. \n")
+
+        except ClientError as e:
+            error_code = e.response["Error"]["Code"]
+            if error_code == "BucketAlreadyOwnedByYou":
+                print("\n [INFO] Bucket already exists and is owned by you. Skipping creation.\n")
+            elif error_code == "BucketAlreadyExists":
+                print("\n [INFO] Bucket name already taken by someone else. Skipping creation.\n")
+            else:
+                print(f"\n [ERROR] Failed to create bucket: {e}\n")
+        except Exception as e:
+            print(f"\n [ERROR] An unexpected error occurred: {e}\n")
 
     def check_content(self) -> None:
         '''
         Read bucket content files
         :return:
         '''
-        print(f"\n    [INFO] Read S3 Bucket {self.bucket_name} content. \n")
+        print(f"\n [INFO] Read S3 Bucket {self.bucket_name} content. \n")
 
         # Store contents of bucket
         objects_list = self.s3_client.list_objects_v2(Bucket=self.bucket_name).get("Contents")
@@ -49,7 +62,7 @@ class Bucket():
 
             # Read the object’s content as text
             object_content = response["Body"].read().decode("utf-8")
-            print(f"Contents of {obj_name}\n--------------")
+            print(f" Contents of {obj_name}\n --------------")
             print(object_content[:100], end="\n\n")
 
     def clean_up(self) -> None:
@@ -69,4 +82,4 @@ class Bucket():
 
             self.s3_client.delete_bucket(Bucket=self.bucket_name)
         except Exception as e:
-            print(f"\n    [INFO] Failed to delete bucket {self.bucket_name}: {e}")
+            print(f"\n [INFO] Failed to delete bucket {self.bucket_name}: {e}")

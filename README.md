@@ -154,7 +154,13 @@ The `.github/workflows/workflow.yaml` folder contains the file with the pipeline
 
 To access the porject documentation open the file : `docs/_build/html/index.html`
 
-#### 5. Logging
+#### 5. Logging (S3 Bucket)
+
+All project logs are stored within an **S3 bucket**.
+
+The class responsible for instantiating this bucket can be found at: `src/dataclass/bucket/log_bucket.py`.
+
+The log level can be configured at: `src/dataclass/log_manager.py` using `set_baseConfig(log_level)` function.
 
 #### 6. Monitoring
 
