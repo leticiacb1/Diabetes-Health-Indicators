@@ -162,6 +162,18 @@ The class responsible for instantiating this bucket can be found at: `src/datacl
 
 The log level can be configured at: `src/dataclass/log_manager.py` using `set_baseConfig(log_level)` function.
 
+Buckets storing project log information:
+
+* `preprocess.py`: 
+  * **bucket_name = mlops-project-diabetes-log-bucket**
+  * **key = mlops-project-diabetes-preprocess-logs** 
+  * **logger_name = process_logger**
+ 
+* `train.py`: 
+  * **bucket_name = mlops-project-diabetes-log-bucket**
+  * **key = mlops-project-diabetes-train-logs** 
+  * **logger_name = train_logger** 
+
 #### 6. Monitoring
 
 ### 📌 How to use this project
