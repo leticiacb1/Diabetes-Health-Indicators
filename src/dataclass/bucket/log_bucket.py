@@ -1,8 +1,11 @@
 from .bucket import Bucket
 
+from src.dataclass.log_manager import LogManager
+from ...utils.upload_data import bucket_name
+
 class LogBucket(Bucket):
-    def __init__(self, bucket_name: str):
-        Bucket.__init__(self, bucket_name)
+    def __init__(self, logger: LogManager, bucket_name: str):
+        Bucket.__init__(self, logger, bucket_name)
 
     def write_logs(self, msm: str, key: str) -> None:
         '''
@@ -14,10 +17,12 @@ class LogBucket(Bucket):
 
         self.s3_client.put_object(Body=msm, Bucket=self.bucket_name, Key=key)
 
+        self.logger.log.info(f"\n [INFO] Writing logs to the bucket = {bucket_name} and key = {key} \n")
+
     def read_logs(self, key: str):
 
         obj = self.s3_client.get_object(Bucket=self.bucket_name, Key=key)
         file_content = obj["Body"].read().decode("utf-8")
 
-        print(f"\n [INFO] Logs stored in bucket = {self.bucket_name} and key = {key}: \n")
-        print(f"\n{file_content} \n")
+        self.logger.log.info(f"\n [INFO] Logs stored in bucket = {self.bucket_name} and key = {key}: \n")
+        self.logger.log.info(f"\n{file_content} \n")

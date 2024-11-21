@@ -210,5 +210,5 @@ if __name__ == "__main__":
         log_bucket.write_logs(logger.string_io.getvalue(), log_key)
 
         # Check logs:
-        log_bucket.check_content()
-        log_bucket.read_logs(log_key)
+        # log_bucket.check_content()
+        # log_bucket.read_logs(log_key)

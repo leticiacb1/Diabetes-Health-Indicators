@@ -152,7 +152,7 @@ The `.github/workflows/workflow.yaml` folder contains the file with the pipeline
   $ cd docs/ && make html 
 ```
 
-To access the porject documentation open the file : `docs/_build/html/index.html`
+To access the project documentation open the file : `docs/_build/html/index.html`
 
 #### 5. Logging (S3 Bucket)
 
