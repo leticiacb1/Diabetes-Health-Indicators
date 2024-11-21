@@ -209,6 +209,9 @@ if __name__ == "__main__":
 
     # ---- Main ----
     exp_name = "mlops-project-diabetes-exp"
+    exp_url = "http://localhost:5000"
+
+    mlflow.set_tracking_uri(exp_url)
     mlflow.set_experiment(exp_name)
     with mlflow.start_run():
         run_name = "project-run-v0"
@@ -244,3 +247,5 @@ if __name__ == "__main__":
             # Check logs:
             # log_bucket.check_content()
             # log_bucket.read_logs(log_key)
+
+            logger.log.info(f" [INFO] MLFlow {exp_name}  running at: {exp_url} \n")

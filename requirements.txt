@@ -10,3 +10,4 @@ scikit-learn==1.5.2
 sphinx==7.2.6
 sphinx_rtd_theme==3.0.2
 mlflow==2.18.0
+psycopg2==2.9.10

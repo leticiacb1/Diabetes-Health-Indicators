@@ -202,21 +202,29 @@ SELECT datname FROM pg_database; -- Expected the database name
 ```bash
   $ aws s3api create-bucket --bucket mlops-project-diabetes-tracking-bucket \
   --region us-east-2 --create-bucket-configuration LocationConstraint=us-east-2
+  # LOCATION: http://mlops-project-diabetes-tracking-bucket.s3.amazonaws.com/
   
   # Check if bucket was created
   $ aws s3 ls
 ```
 
-3. Configure MlFlow server to use information from Database and the S3 bucket created:
+3. Run MlFlow server to use information from Database and the S3 bucket created:
 
 ```bash
+  # Terminal 1
   $ mlflow server --backend-store-uri postgresql://USERNAME:PASSWORD@HOST:5432/mlops_project_diabetes_db \
   --default-artifact-root s3://mlops-project-diabetes-tracking-bucket
-  
-  # LOCATION: http://mlops-project-diabetes-tracking-bucket.s3.amazonaws.com/
 ```
 
-> USERNAME , PASSWORD , HOST and PORT = 5432 are the database credentials.
+> username , password , host and port = 5432 are the database credentials.
+
+In another terminal run the training: 
+
+```bash
+# Terminal 2
+  # Root folder
+  $ python -m src.train
+```
 
 ### 📌 How to use this project
 
