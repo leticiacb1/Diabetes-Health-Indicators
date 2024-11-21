@@ -178,13 +178,45 @@ Buckets storing project log information:
 
 #### 6. Tracking (MlFlow)
 
-Local run:
+**Centralization**
+
+Information about the model is saved so that everyone can see it.
 
 ```bash
- # Root directory
- $ python -m src.train
- $ mlfow ui -p 5005
+     |_Database_| ↔️  |_MLFOW_Server_| ↔️  |_S3_Bucket_|
+                            ↕️ 
+                    |_ML_Model_Code_|
+```  
+
+1. Database created with name = **mlops_project_diabetes_db**
+
+In a postgres script run:
+
+```sql
+CREATE DATABASE mlops_project_diabetes_db;
+SELECT datname FROM pg_database; -- Expected the database name
 ```
+
+2. Bucket create with name = **mlops-project-diabetes-tracking-bucket**
+
+```bash
+  $ aws s3api create-bucket --bucket mlops-project-diabetes-tracking-bucket \
+  --region us-east-2 --create-bucket-configuration LocationConstraint=us-east-2
+  
+  # Check if bucket was created
+  $ aws s3 ls
+```
+
+3. Configure MlFlow server to use information from Database and the S3 bucket created:
+
+```bash
+  $ mlflow server --backend-store-uri postgresql://USERNAME:PASSWORD@HOST:5432/mlops_project_diabetes_db \
+  --default-artifact-root s3://mlops-project-diabetes-tracking-bucket
+  
+  # LOCATION: http://mlops-project-diabetes-tracking-bucket.s3.amazonaws.com/
+```
+
+> USERNAME , PASSWORD , HOST and PORT = 5432 are the database credentials.
 
 ### 📌 How to use this project
 
