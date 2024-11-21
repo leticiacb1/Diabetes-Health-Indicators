@@ -50,7 +50,8 @@ def save_parquet(df: pd.DataFrame, data_path: str) -> None:
     logger.log.info(f" [INFO] Saving the preprocess data at {data_path} \n")
 
 if __name__ == "__main__":
-    # Variaveis
+
+    # ---- Variaveis ----
     target_column_name = 'Diabetes_binary'
 
     data_path = 'data/diabetes_data.csv' # Path to the data file tracked by DVC
@@ -61,6 +62,7 @@ if __name__ == "__main__":
     log_bucket_name = "mlops-project-diabetes-log-bucket"
     log_key = "mlops-project-diabetes-preprocess-logs"
 
+    # ---- Main ----
     try:
         # Preprocess data
         prepro_data = preprocess(data_path)

@@ -21,9 +21,13 @@ from src.dataclass.bucket.log_bucket import LogBucket
 from src.dataclass.log_manager import LogManager
 logger = LogManager(logger_name = "train_logger")
 
+# Tracking
+import mlflow
+
 # Constraints
 TEST_SIZE = 0.3
 RANDOM_STATE = 1912
+MAX_ITER = 1000
 
 def load_parquet_data(file_path: str) -> pd.DataFrame:
     '''
@@ -95,10 +99,23 @@ def train(X_train: pd.DataFrame, y_train: pd.Series, best_solver: str):
     :param y_train: series with the train set target values
     :return: Logistic Regression Model
     '''
-    model = LogisticRegression(solver=best_solver)
+    model = LogisticRegression(solver=best_solver, max_iter=MAX_ITER)
     model.fit(X_train, y_train)
 
     logger.log.info(f" [INFO] Training Logistic Regression model with {best_solver} solver \n")
+
+    mlflow.log_param("max_iter", MAX_ITER)
+    mlflow.log_param("best_solver", best_solver)
+    signature = mlflow.models.signature.infer_signature(
+        X_train, model.predict(X_train)
+    )
+    mlflow.sklearn.log_model(
+        model,
+        "logistic_regression_model",
+        signature=signature,
+        registered_model_name="logistic_regression-model",
+        input_example=X_train.iloc[:3],
+    )
 
     return model
 
@@ -128,6 +145,12 @@ def save_results(model, file_path: str, y_test: pd.Series, y_pred: pd.Series) ->
     logger.log.info(f" [INFO] Saving model performance results at {file_path}: \n")
     logger.log.info(f" [INFO] Accuracy = {accuracy}; F1 = {f1}; MAE= {mae}; MSE= {mse}; R2:{r2}  \n")
 
+    mlflow.log_metric("Accuracy", accuracy)
+    mlflow.log_metric("F1", f1)
+    mlflow.log_metric("MAE", mae)
+    mlflow.log_metric("MSE", mse)
+    mlflow.log_metric("R2", r2)
+
 def save_confusion_matrix(model, y_test: pd.Series, y_pred: pd.Series, file_path: str) -> None:
     '''
     Save model confusion matrix.
@@ -152,6 +175,7 @@ def save_confusion_matrix(model, y_test: pd.Series, y_pred: pd.Series, file_path
     plt.close()
 
     logger.log.info(f" [INFO] Saving confusion matrix at {file_path} \n")
+    mlflow.log_artifact(file_path)
 
 def save_model(model, file_path: str) -> None:
     '''
@@ -167,7 +191,8 @@ def save_model(model, file_path: str) -> None:
     logger.log.info(f" [INFO] Saving model file at {file_path} \n")
 
 if __name__ == "__main__":
-    # Variáveis
+
+    # ---- Variáveis ----
     target_column_name = 'Diabetes_binary'
 
     logistic_regression_solvers = ['lbfgs', 'liblinear', 'newton-cg', 'newton-cholesky', 'sag', 'saga']
@@ -182,33 +207,40 @@ if __name__ == "__main__":
     log_bucket_name = "mlops-project-diabetes-log-bucket"
     log_key = "mlops-project-diabetes-train-logs"
 
-    try:
-        # Load preprocess data
-        df_features = load_parquet_data(prepro_feature_data_path)
-        df_target = load_parquet_data(prepro_target_data_path)
+    # ---- Main ----
+    exp_name = "mlops-project-diabetes-exp"
+    mlflow.set_experiment(exp_name)
+    with mlflow.start_run():
+        run_name = "project-run-v0"
+        mlflow.set_tag("mlflow.runName", run_name)
 
-        # Split data
-        X_train, X_test, y_train, y_test = split_data(df_features, df_target[target_column_name])
+        try:
+            # Load preprocess data
+            df_features = load_parquet_data(prepro_feature_data_path)
+            df_target = load_parquet_data(prepro_target_data_path)
 
-        # Train model
-        best_solver = find_best_solver(logistic_regression_solvers, X_train, y_train, X_test, y_test)
-        logistic_regression_model = train(X_train, y_train, best_solver)
+            # Split data
+            X_train, X_test, y_train, y_test = split_data(df_features, df_target[target_column_name])
 
-        # Predict
-        y_pred = logistic_regression_model.predict(X_test)
+            # Train model
+            best_solver = find_best_solver(logistic_regression_solvers, X_train, y_train, X_test, y_test)
+            logistic_regression_model = train(X_train, y_train, best_solver)
 
-        # Save
-        save_model(logistic_regression_model, model_path)
-        save_confusion_matrix(logistic_regression_model, y_test, y_pred, confusion_matrix_path)
-        save_results(logistic_regression_model, model_metrics_path, y_test, y_pred)
-    except Exception as e:
-        logger.log.error(f" [ERROR] An error occurred: {e} \n")
-    finally:
-        # Write Logs in S3 bucket
-        log_bucket = LogBucket(logger, log_bucket_name)
-        log_bucket.create()
-        log_bucket.write_logs(logger.string_io.getvalue(), log_key)
+            # Predict
+            y_pred = logistic_regression_model.predict(X_test)
 
-        # Check logs:
-        # log_bucket.check_content()
-        # log_bucket.read_logs(log_key)
+            # Save
+            save_model(logistic_regression_model, model_path)
+            save_confusion_matrix(logistic_regression_model, y_test, y_pred, confusion_matrix_path)
+            save_results(logistic_regression_model, model_metrics_path, y_test, y_pred)
+        except Exception as e:
+            logger.log.error(f" [ERROR] An error occurred: {e} \n")
+        finally:
+            # Write Logs in S3 bucket
+            log_bucket = LogBucket(logger, log_bucket_name)
+            log_bucket.create()
+            log_bucket.write_logs(logger.string_io.getvalue(), log_key)
+
+            # Check logs:
+            # log_bucket.check_content()
+            # log_bucket.read_logs(log_key)

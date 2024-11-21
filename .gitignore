@@ -6,6 +6,9 @@ venv/
 data/*.csv
 data/*.parquet
 
+# Tracking
+mlruns/
+
 # IDEA
 .idea/
 

@@ -143,6 +143,8 @@ The jupyter notebook in AWS Sagemaker with the exploratory analysis was download
 
 The `.github/workflows/workflow.yaml` folder contains the file with the pipeline sets and stages.
 
+**(In Progress ...)**
+
 #### 4. Documentation
 
 **Sphinx**  generate auto documentation for the project. 
@@ -174,7 +176,15 @@ Buckets storing project log information:
   * **key = mlops-project-diabetes-train-logs** 
   * **logger_name = train_logger** 
 
-#### 6. Monitoring
+#### 6. Tracking (MlFlow)
+
+Local run:
+
+```bash
+ # Root directory
+ $ python -m src.train
+ $ mlfow ui -p 5005
+```
 
 ### 📌 How to use this project
 
