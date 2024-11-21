@@ -1,4 +1,10 @@
+# Data
 import pandas as pd
+
+# Logging
+from src.dataclass.bucket.log_bucket import LogBucket
+from src.dataclass.log_manager import LogManager
+logger = LogManager(logger_name = "process_logger")
 
 def preprocess(data_path: str) -> pd.DataFrame:
     '''
@@ -11,8 +17,9 @@ def preprocess(data_path: str) -> pd.DataFrame:
 
     # Remove duplicates rows
     prepro_df = remove_duplicate_lines(df)
-    print(f" [INFO] Shape before remove duplicates = {df.shape}\n")
-    print(f" [INFO] Shape after remove duplicates = {prepro_df.shape}\n")
+
+    logger.log.info(f" [INFO] Shape before remove duplicates = {df.shape}\n")
+    logger.log.info(f" [INFO] Shape after remove duplicates = {prepro_df.shape}\n")
 
     return prepro_df
 
@@ -24,10 +31,10 @@ def remove_duplicate_lines(df: pd.DataFrame) -> pd.DataFrame:
     :return: dataframe without duplicated rows
     '''
     n_duplicates = df.duplicated().sum()
-    print(f" [INFO] Number of duplicate values = {n_duplicates}\n")
     df_no_duplicates = df.drop_duplicates()
 
-    # TODO: Adicionar prints e logs
+    logger.log.info(f" [INFO] Removing duplicated lines : {n_duplicates} duplicate rows \n")
+
     return df_no_duplicates
 
 def save_parquet(df: pd.DataFrame, data_path: str) -> None:
@@ -39,24 +46,39 @@ def save_parquet(df: pd.DataFrame, data_path: str) -> None:
     :return:
     '''
     df.to_parquet(data_path)
-    # TODO: Adicionar prints e logs
+
+    logger.log.info(f" [INFO] Saving the preprocess data at {data_path} \n")
 
 if __name__ == "__main__":
-    # Target column
+    # Variaveis
     target_column_name = 'Diabetes_binary'
 
-    # Path to the data file tracked by DVC
-    data_path = 'data/diabetes_data.csv'
+    data_path = 'data/diabetes_data.csv' # Path to the data file tracked by DVC
 
-    # Path to save preprocess data
     prepro_feature_data_path = 'data/diabetes_feature_data.parquet'
     prepro_target_data_path  = 'data/diabetes_target_data.parquet'
 
-    # Preprocess data
-    prepro_data = preprocess(data_path)
-    features_data = prepro_data.drop(target_column_name, axis=1)
-    target_data = prepro_data[target_column_name].to_frame()
+    log_bucket_name = "mlops-project-diabetes-log-bucket"
+    log_key = "mlops-project-diabetes-preprocess-logs"
 
-    # Save preprocessed data
-    save_parquet(features_data, prepro_feature_data_path)
-    save_parquet(target_data, prepro_target_data_path)
+    try:
+        # Preprocess data
+        prepro_data = preprocess(data_path)
+        features_data = prepro_data.drop(target_column_name, axis=1)
+        target_data = prepro_data[target_column_name].to_frame()
+
+        # Save preprocessed data
+        save_parquet(features_data, prepro_feature_data_path)
+        save_parquet(target_data, prepro_target_data_path)
+
+    except Exception as e:
+        logger.log.error(f" [ERROR] An error occurred: {e} \n")
+    finally:
+        # Write Logs in S3 bucket
+        log_bucket = LogBucket(logger, log_bucket_name)
+        log_bucket.create()
+        log_bucket.write_logs(logger.string_io.getvalue(), log_key)
+
+        # Check logs:
+        # log_bucket.check_content()
+        # log_bucket.read_logs(log_key)
