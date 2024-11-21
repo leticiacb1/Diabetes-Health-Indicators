@@ -40,11 +40,11 @@ class Bucket():
         except ClientError as e:
             error_code = e.response["Error"]["Code"]
             if error_code == "BucketAlreadyOwnedByYou":
-                self.logger.log.info(f"\n [INFO] Bucket already exists and is owned by you. Skipping creation...\n")
+                self.logger.log.info(f"\n [INFO] Bucket {self.bucket_name} already exists and is owned by you. Skipping creation...\n")
             elif error_code == "BucketAlreadyExists":
-                self.logger.log.info(f"\n [INFO] Bucket name already taken by someone else. Skipping creation...\n")
+                self.logger.log.info(f"\n [INFO] Bucket name  {self.bucket_name} already taken by someone else. Skipping creation...\n")
             else:
-                self.logger.log.error(f"\n [ERROR] Failed to create bucket: {e} \n")
+                self.logger.log.error(f"\n [ERROR] Failed to create bucket {self.bucket_name}: {e} \n")
         except Exception as e:
             self.logger.log.error(f"\n [ERROR] An unexpected error occurred: {e} \n")
 

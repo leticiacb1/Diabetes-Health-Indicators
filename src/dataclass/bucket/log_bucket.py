@@ -1,7 +1,6 @@
 from .bucket import Bucket
 
 from src.dataclass.log_manager import LogManager
-from ...utils.upload_data import bucket_name
 
 class LogBucket(Bucket):
     def __init__(self, logger: LogManager, bucket_name: str):
@@ -17,7 +16,7 @@ class LogBucket(Bucket):
 
         self.s3_client.put_object(Body=msm, Bucket=self.bucket_name, Key=key)
 
-        self.logger.log.info(f"\n [INFO] Writing logs to the bucket = {bucket_name} and key = {key} \n")
+        self.logger.log.info(f"\n [INFO] Writing logs to the bucket = {self.bucket_name} and key = {key} \n")
 
     def read_logs(self, key: str):
 

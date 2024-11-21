@@ -205,7 +205,7 @@ if __name__ == "__main__":
         logger.log.error(f" [ERROR] An error occurred: {e} \n")
     finally:
         # Write Logs in S3 bucket
-        log_bucket = LogBucket(log_bucket_name)
+        log_bucket = LogBucket(logger, log_bucket_name)
         log_bucket.create()
         log_bucket.write_logs(logger.string_io.getvalue(), log_key)
 
