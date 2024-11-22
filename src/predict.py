@@ -24,8 +24,34 @@ def predict(event, context):
     Make a prediction using the trained model.
 
     :param event: object containing the input data
+                  Expect the input to have a health_info key:
+                    "health_info" : {
+                                 "HighBP": ,
+                                 "HighChol": ,
+                                 "CholCheck":,
+                                 "BMI": ,
+                                 "Smoker": ,
+                                 "Stroke": ,
+                                 "HeartDiseaseorAttack": ,
+                                 "PhysActivity": ,
+                                 "Fruits": ,
+                                 "Veggies" ,
+                                 "HvyAlcoholConsump":,
+                                 "AnyHealthcare":,
+                                 "NoDocbcCost":,
+                                 "GenHlth":,
+                                 "MentHlth":,
+                                 "PhysHlth":,
+                                 "DiffWalk":,
+                                 "Sex":,
+                                 "Age":,
+                                 "Education": ,
+                                 "Income":
+                                }
+
     :param context: AWS Lambda context object
     :return: prediction result
+             (0.0 - no diabetes or 1.0 - prediabetes or diabetes)
     '''
     try:
         # Validate request

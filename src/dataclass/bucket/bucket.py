@@ -70,7 +70,7 @@ class Bucket():
 
     def clean_up(self) -> None:
         '''
-        Delet bucket and all content inside
+        Delete bucket and all content inside
         :return: None
         '''
         try:
@@ -86,4 +86,4 @@ class Bucket():
             self.s3_client.delete_bucket(Bucket=self.bucket_name)
             self.logger.log.info(f"\n [INFO] S3 Bucket {self.bucket_name} deleted successfully \n")
         except Exception as e:
-            self.logger.log.info(f"\n [INFO] Failed to delete bucket {self.bucket_name}: {e}\n")
+            self.logger.log.error(f"\n [ERROR] Failed to delete bucket {self.bucket_name}: {e}\n")
