@@ -1,5 +1,6 @@
 # Data
 import pandas as pd
+from pandas.io.xml import preprocess_data
 
 # Logging
 from src.dataclass.bucket.log_bucket import LogBucket
@@ -51,11 +52,12 @@ def save_parquet(df: pd.DataFrame, data_path: str) -> None:
 
 if __name__ == "__main__":
 
-    # ---- Variaveis ----
+    # ---- Variables ----
     target_column_name = 'Diabetes_binary'
 
     data_path = 'data/diabetes_data.csv' # Path to the data file tracked by DVC
 
+    prepro_data_path = 'data/diabetes_data.parquet'
     prepro_feature_data_path = 'data/diabetes_feature_data.parquet'
     prepro_target_data_path  = 'data/diabetes_target_data.parquet'
 
@@ -70,6 +72,7 @@ if __name__ == "__main__":
         target_data = prepro_data[target_column_name].to_frame()
 
         # Save preprocessed data
+        save_parquet(prepro_data, prepro_data_path)
         save_parquet(features_data, prepro_feature_data_path)
         save_parquet(target_data, prepro_target_data_path)
 

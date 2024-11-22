@@ -221,9 +221,29 @@ SELECT datname FROM pg_database; -- Expected the database name
 In another terminal run the training: 
 
 ```bash
-# Terminal 2
+  # Terminal 2
   # Root folder
   $ python -m src.train
+```
+
+**Model Registry**
+
+Run a specific model version locally using Docker:
+```bash
+  $ export MLFLOW_TRACKING_URI=http://localhost:5000
+  $ mlflow models build-docker --name <model-name> --model-uri "models:/<model-name>/<version>"
+  # Models tab in MLFlow has <model-name> and <version> of registered model
+  $ docker run -d -p 8080:8080 <model-name>:latest
+  # In another terminal you can make requests passing a new data and receiving the prediction
+```
+
+#### 7. Monitoring (data drift)
+
+To assess whether there was data drift with the data, run
+
+```bash
+  # Root folder
+  $ python -m src.monitoring.data_drift
 ```
 
 ### 📌 How to use this project

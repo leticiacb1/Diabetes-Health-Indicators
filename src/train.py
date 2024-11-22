@@ -8,7 +8,7 @@ import pickle
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Modeling
+# Model
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, accuracy_score, f1_score, mean_absolute_error, mean_squared_error, r2_score
@@ -192,7 +192,7 @@ def save_model(model, file_path: str) -> None:
 
 if __name__ == "__main__":
 
-    # ---- Variáveis ----
+    # ---- Variables ----
     target_column_name = 'Diabetes_binary'
 
     logistic_regression_solvers = ['lbfgs', 'liblinear', 'newton-cg', 'newton-cholesky', 'sag', 'saga']
