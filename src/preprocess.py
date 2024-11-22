@@ -1,11 +1,17 @@
 # Data
 import pandas as pd
-from pandas.io.xml import preprocess_data
+
+# Variable
+from src.variables import target_column_name, \
+                          data_path, \
+                          prepro_data_path, prepro_feature_data_path, prepro_target_data_path, \
+                          log_bucket_name, log_preprocess_key, \
+                          prepro_logger_name
 
 # Logging
 from src.dataclass.bucket.log_bucket import LogBucket
 from src.dataclass.log_manager import LogManager
-logger = LogManager(logger_name = "process_logger")
+logger = LogManager(logger_name = prepro_logger_name)
 
 def preprocess(data_path: str) -> pd.DataFrame:
     '''
@@ -52,19 +58,6 @@ def save_parquet(df: pd.DataFrame, data_path: str) -> None:
 
 if __name__ == "__main__":
 
-    # ---- Variables ----
-    target_column_name = 'Diabetes_binary'
-
-    data_path = 'data/diabetes_data.csv' # Path to the data file tracked by DVC
-
-    prepro_data_path = 'data/diabetes_data.parquet'
-    prepro_feature_data_path = 'data/diabetes_feature_data.parquet'
-    prepro_target_data_path  = 'data/diabetes_target_data.parquet'
-
-    log_bucket_name = "mlops-project-diabetes-log-bucket"
-    log_key = "mlops-project-diabetes-preprocess-logs"
-
-    # ---- Main ----
     try:
         # Preprocess data
         prepro_data = preprocess(data_path)
@@ -82,7 +75,7 @@ if __name__ == "__main__":
         # Write Logs in S3 bucket
         log_bucket = LogBucket(logger, log_bucket_name)
         log_bucket.create()
-        log_bucket.write_logs(logger.string_io.getvalue(), log_key)
+        log_bucket.write_logs(logger.string_io.getvalue(), log_preprocess_key)
 
         # Check logs:
         # log_bucket.check_content()

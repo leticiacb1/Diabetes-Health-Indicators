@@ -239,7 +239,7 @@ Run a specific model version locally using Docker:
 
 #### 7. Monitoring (data drift)
 
-To assess whether there was data drift with the data, run
+To assess whether there was data drift with the data, run:
 
 ```bash
   # Root folder
@@ -248,6 +248,8 @@ To assess whether there was data drift with the data, run
 
 ### 📌 How to use this project
 
+Project variables can be found at file: `src/variables.py`.
+
 Make sure your data folder is up to date with dvc:
 ```bash
  $ dvc status
@@ -255,9 +257,18 @@ Make sure your data folder is up to date with dvc:
 ```
 
 To run the scripts separately:
+
 ```bash
  # Root folder 
  $ python -m src.preprocess
+```
+
+```bash
+ # Root folder 
+ # Terminal 1
+ $ mlflow server --backend-store-uri postgresql://USERNAME:PASSWORD@HOST:5432/mlops_project_diabetes_db \
+  --default-artifact-root s3://mlops-project-diabetes-tracking-bucket
+ # Terminal 2
  $ python -m src.train
 ```
 

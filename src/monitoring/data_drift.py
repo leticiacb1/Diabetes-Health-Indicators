@@ -2,27 +2,21 @@
 import pandas as pd
 import random
 
+# Variables
+from src.variables import TEST_SIZE, RANDOM_STATE, MAX_ITER, \
+                           expected_accuracy, delta_diff, \
+                           prepro_data_path
+
 # Model
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, accuracy_score
 
-TEST_SIZE = 0.3
-RANDOM_STATE = 1912
-MAX_ITER = 1000
-
 if __name__ == "__main__":
-
-    # ---- Variables ----
-    prepro_feature_data_path = 'data/diabetes_data.parquet'
-    solver = "saga"
-
-    expected_accuracy = 0.5
-    delta_diff = 0.1
 
     try:
         # Prepare data for evaluation
-        prepro_data = pd.read_parquet(prepro_feature_data_path)
+        prepro_data = pd.read_parquet(prepro_data_path)
         prepro_data_sets = prepro_data
         prepro_data_sets["Set"] = random.choices([0, 1], k=len(prepro_data_sets))
 
@@ -35,7 +29,7 @@ if __name__ == "__main__":
         )
 
         # Train model
-        model = LogisticRegression(solver=solver, max_iter=MAX_ITER)
+        model = LogisticRegression(solver="saga", max_iter=MAX_ITER)
         model.fit(X_train, y_train)
 
         # Performance

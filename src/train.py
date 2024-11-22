@@ -1,6 +1,15 @@
 # Data
 import pandas as pd
 
+# Variables
+from src.variables import target_column_name, logistic_regression_solvers, \
+                      model_path, confusion_matrix_path, model_metrics_path, \
+                      TEST_SIZE, RANDOM_STATE, MAX_ITER, \
+                      prepro_feature_data_path, prepro_target_data_path, \
+                      log_bucket_name, log_train_key, \
+                      exp_name, exp_url, run_name, \
+                      train_logger_name
+
 # Export
 import pickle
 
@@ -19,15 +28,10 @@ warnings.filterwarnings("ignore", category=UserWarning)
 # Logging
 from src.dataclass.bucket.log_bucket import LogBucket
 from src.dataclass.log_manager import LogManager
-logger = LogManager(logger_name = "train_logger")
+logger = LogManager(logger_name = train_logger_name)
 
 # Tracking
 import mlflow
-
-# Constraints
-TEST_SIZE = 0.3
-RANDOM_STATE = 1912
-MAX_ITER = 1000
 
 def load_parquet_data(file_path: str) -> pd.DataFrame:
     '''
@@ -192,29 +196,9 @@ def save_model(model, file_path: str) -> None:
 
 if __name__ == "__main__":
 
-    # ---- Variables ----
-    target_column_name = 'Diabetes_binary'
-
-    logistic_regression_solvers = ['lbfgs', 'liblinear', 'newton-cg', 'newton-cholesky', 'sag', 'saga']
-
-    prepro_feature_data_path = 'data/diabetes_feature_data.parquet'
-    prepro_target_data_path = 'data/diabetes_target_data.parquet'
-
-    model_path = 'models/logistic_regression.parquet'
-    confusion_matrix_path = 'results/confusion_matrix.png'
-    model_metrics_path = 'results/model_test_metrics.csv'
-
-    log_bucket_name = "mlops-project-diabetes-log-bucket"
-    log_key = "mlops-project-diabetes-train-logs"
-
-    # ---- Main ----
-    exp_name = "mlops-project-diabetes-exp"
-    exp_url = "http://localhost:5000"
-
     mlflow.set_tracking_uri(exp_url)
     mlflow.set_experiment(exp_name)
     with mlflow.start_run():
-        run_name = "project-run-v0"
         mlflow.set_tag("mlflow.runName", run_name)
 
         try:
@@ -242,7 +226,7 @@ if __name__ == "__main__":
             # Write Logs in S3 bucket
             log_bucket = LogBucket(logger, log_bucket_name)
             log_bucket.create()
-            log_bucket.write_logs(logger.string_io.getvalue(), log_key)
+            log_bucket.write_logs(logger.string_io.getvalue(), log_train_key)
 
             # Check logs:
             # log_bucket.check_content()
