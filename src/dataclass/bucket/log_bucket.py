@@ -18,8 +18,13 @@ class LogBucket(Bucket):
 
         self.logger.log.info(f"\n [INFO] Writing logs to the bucket = {self.bucket_name} and key = {key} \n")
 
-    def read_logs(self, key: str):
-
+    def read_logs(self, key: str) -> None:
+        '''
+        Read logs stored in S3 bucket
+        :param key: filename
+        :return: None
+        '''
+        
         obj = self.s3_client.get_object(Bucket=self.bucket_name, Key=key)
         file_content = obj["Body"].read().decode("utf-8")
 

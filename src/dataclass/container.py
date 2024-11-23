@@ -28,6 +28,7 @@ class ContainerRegistry():
     def create_repository(self) -> None:
         '''
         Create ECR repository in AWS using the credentials in .env file
+
         :return: None
         '''
         try:
@@ -57,7 +58,13 @@ class ContainerRegistry():
         except Exception as e:
             self.logger.log.error(f"\n [ERROR] An unexpected error occurred: {e} \n")
 
-    def check_content(self):
+    def check_content(self) -> None:
+        '''
+        Check ECR content
+
+        :return: None
+        '''
+
         try:
             response = self.ecr_client.list_images(repositoryName=self.repository_name)
             images = response.get('imageIds', [])
@@ -72,9 +79,10 @@ class ContainerRegistry():
         except Exception as e:
             self.logger.log.error(f"\n [ERROR] Failed to check content ECR repository {self.repository_name}: {e} \n")
 
-    def clean_up(self):
+    def clean_up(self) -> None:
         '''
-        Delete ECR repository.
+        Delete ECR repository
+
         :return: None
         '''
         try:
