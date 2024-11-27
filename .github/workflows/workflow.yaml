@@ -106,7 +106,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ECR_NAME: mlops-project-diabetes-ecr
-      REPOSITORY_URI: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_NAME
+      REPOSITORY_URI:  ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_NAME }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -132,12 +132,12 @@ jobs:
 
       - name: Authenticate Docker with ECR
         run: |
-         aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
+         aws ecr get-login-password --region  ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.REPOSITORY_URI }}
       
       - name: Build and Push Docker Image
         run: |
-          docker build -t $REPOSITORY_URI:latest .
-          docker push $REPOSITORY_URI:latest
+          docker build -t ${{ env.REPOSITORY_URI }}:latest .
+          docker push ${{ env.REPOSITORY_URI }}:latest
 
       - name: Deploy Lambda Function
         run: python -m src.utils.create_lambda_function
