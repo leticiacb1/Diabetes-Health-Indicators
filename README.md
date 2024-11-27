@@ -347,6 +347,14 @@ To run the scripts separately:
  # Access MLFlow  http://localhost:5000/
 ```
 
+With step **8. ECR and Docker Image** done, is possible to access de predict function by api gateway:
+
+```bash 
+ $ curl -X POST -H "Content-Type: application/json" \
+    -d '{"health_info": {"HighBP": 0.0, "HighChol": 1.0, "CholCheck": 1.0, "BMI": 40.0, "Smoker": 1.0, "Stroke": 0.0, "HeartDiseaseorAttack": 0.0, "PhysActivity": 0.0, "Fruits": 0.0, "Veggies": 0.0, "HvyAlcoholConsump": 1.0, "AnyHealthcare": 0.0, "NoDocbcCost": 1.0, "GenHlth": 0.0, "MentHlth": 5.0, "PhysHlth": 18.0, "DiffWalk": 15.0, "Sex": 1.0, "Age": 0.0, "Education": 9.0, "Income": 4.0}}' \
+    <api-endpoint>/predict
+```
+
 Run tests:
 ```bash
  # Root folder

@@ -34,7 +34,7 @@ class ContainerRegistry():
         try:
             try:
                 response = self.ecr_client.describe_repositories(repositoryNames=[self.repository_name])
-                self.logger.log.info(f"\n [INFO]  Repository '{self.repository_name}' already exists. Skipping creation. \n ")
+                self.logger.log.info(f"\n [INFO]  Repository '{self.repository_name}' already exists. \n ")
 
                 self.logger.log.info(
                     f"\n [INFO] Deleting repository that already exists to create a new one ... \n")

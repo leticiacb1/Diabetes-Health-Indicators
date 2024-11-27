@@ -127,6 +127,7 @@ jobs:
 
       - name: Create Docker Container Repository
         run: python -m src.utils.create_docker_container
+             sleep 60
 
       - name: Authenticate Docker with ECR
         run: |
