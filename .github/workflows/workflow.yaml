@@ -25,6 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo " 🎬 Preprocess data ..."
+
+      - name: Checkout code
+      - uses: actions/checkout@v4
+
       - name: List files in src directory
         run: ls -la
       - name: Run preprocess function
