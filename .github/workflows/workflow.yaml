@@ -105,8 +105,7 @@ jobs:
     needs: monitoring
     runs-on: ubuntu-latest
     env:
-      ECR_NAME: mlops-project-diabetes-ecr
-      REPOSITORY_URI:  ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_NAME }}
+      REPOSITORY_URI:  ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/mlops-project-diabetes-ecr
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -128,7 +127,7 @@ jobs:
       - name: Create Docker Container Repository
         run: |
              python -m src.utils.create_docker_container &
-             sleep 60
+             sleep 20
 
       - name: Authenticate Docker with ECR
         run: |
@@ -140,10 +139,14 @@ jobs:
           docker push ${{ env.REPOSITORY_URI }}:latest
 
       - name: Deploy Lambda Function
-        run: python -m src.utils.create_lambda_function
+        run: | 
+             python -m src.utils.create_lambda_function &
+             sleep 20
 
       - name: Create API Gateway
-        run: python -m src.utils.create_api
+        run: | 
+             python -m src.utils.create_api &
+             sleep 20
 
   tests:
     needs: predict
