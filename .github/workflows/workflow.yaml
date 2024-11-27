@@ -4,9 +4,10 @@ on:
     branches:
       - main
 jobs:
-  build-and-test:
+  setup:
     runs-on: ubuntu-latest
     steps:
+      - run: echo "⚙ Install code dependencies ..."
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -19,5 +20,17 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+  preprocess:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo " 🎬 Preprocess data ..."
+
+      - name: Run preprocess function
+        run: python -m src.preprocess
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "📌 Run tests ..."
       - name: Run tests
         run: pytest
