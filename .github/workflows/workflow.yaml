@@ -21,6 +21,7 @@ jobs:
         run: pip install -r requirements.txt
 
   preprocess:
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - run: echo " 🎬 Preprocess data ..."
@@ -29,6 +30,7 @@ jobs:
         run: python -m src.preprocess
 
   tests:
+    needs: preprocess
     runs-on: ubuntu-latest
     steps:
       - run: echo "📌 Run tests ..."
