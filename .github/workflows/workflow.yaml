@@ -27,7 +27,7 @@ jobs:
       - run: echo " 🎬 Preprocess data ..."
 
       - name: Checkout code
-      - uses: actions/checkout@v4
+        uses: actions/checkout@v4
 
       - name: List files in src directory
         run: ls -la
