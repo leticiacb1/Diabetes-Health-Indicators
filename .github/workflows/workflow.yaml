@@ -4,11 +4,10 @@ on:
     branches:
       - main
 jobs:
-  setup:
+  preprocess:
+    needs: setup
     runs-on: ubuntu-latest
     steps:
-      - run: echo "⚙ Install code dependencies ..."
-
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -17,20 +16,11 @@ jobs:
         with:
           python-version: '3.10'
 
+      - run: echo "⚙ Install code dependencies ..."
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-  preprocess:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo " 🎬 Preprocess data ..."
-
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: List files in src directory
-        run: ls -la
+      - run: echo " 🎬 Run preprocess function ..."
       - name: Run preprocess function
         run: python -m src.preprocess
 
