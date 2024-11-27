@@ -23,15 +23,12 @@ jobs:
         with:
           python-version: '3.10'
 
-      - run: echo "⚙ Install code dependencies ..."
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - run: echo " 🎬 Run preprocess function ..."
       - name: Run preprocess function
         run: python -m src.preprocess
 
-      - run: echo " Upload generated files ..."
       - name: Upload generated files
         uses: actions/upload-artifact@v3
         with:
@@ -44,12 +41,6 @@ jobs:
   train:
     needs: preprocess
     runs-on: ubuntu-latest
-    env:
-      AWS_LAMBDA_ROLE_ARN: ${{ secrets.AWS_LAMBDA_ROLE_ARN }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -59,29 +50,24 @@ jobs:
         with:
           python-version: '3.10'
 
-      - run: echo "⚙ Install code dependencies ..."
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - run: echo " Download files generated form preprocess ..."
       - name: Download generated files
         uses: actions/download-artifact@v3
         with:
           name: preprocessed-data
           path: ./data
 
-      - run: echo "Start MLflow server ..."
       - name: Start MLflow server
         run: |
           nohup mlflow server --backend-store-uri postgresql://${{ secrets.DB_USERNAME}}:${{ secrets.DB_PASSWORD }}@${{ secrets.DB_HOST }}:5432/mlops_project_diabetes_db \
           --default-artifact-root s3://mlops-project-diabetes-tracking-bucket &
           sleep 20 
 
-      - run: echo "🤖 Run train function ..."
       - name: Train model
         run: python -m src.train
 
-      - run: echo " Upload generated files ..."
       - name: Upload generated files
         uses: actions/upload-artifact@v3
         with:
@@ -94,12 +80,6 @@ jobs:
   monitoring:
     needs: train
     runs-on: ubuntu-latest
-    env:
-      AWS_LAMBDA_ROLE_ARN: ${{ secrets.AWS_LAMBDA_ROLE_ARN }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -109,24 +89,24 @@ jobs:
         with:
           python-version: '3.10'
 
-      - run: echo "⚙ Install code dependencies ..."
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - run: echo " Download files generated form preprocess ..."
       - name: Download generated files
         uses: actions/download-artifact@v3
         with:
           name: preprocessed-data
           path: ./data
 
-      - run: echo " Run data drift analysis  ..."
-      - name: Data drift
+      - name: Data drift analysis
         run: python -m src.monitoring.data_drift
 
   predict:
     needs: monitoring
     runs-on: ubuntu-latest
+    env:
+      ECR_NAME: mlops-project-diabetes-ecr
+      REPOSITORY_URI: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_NAME
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -136,7 +116,26 @@ jobs:
         with:
           python-version: '3.10'
 
-      - run: echo " Nothing for now ..."
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Create Docker Container Repository
+        run: python -m src.utils.create_docker_container
+
+      - name: Authenticate Docker with ECR
+        run: |
+         aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
+      
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t $REPOSITORY_URI:latest .
+          docker push $REPOSITORY_URI:latest
+
+      - name: Deploy Lambda Function
+        run: python -m src.utils.create_lambda_function
+
+      - name: Create API Gateway
+        run: python -m src.utils.create_api
 
   tests:
     needs: predict
@@ -154,6 +153,5 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - run: echo "📌 Run tests ..."
       - name: Run tests
         run: pytest
