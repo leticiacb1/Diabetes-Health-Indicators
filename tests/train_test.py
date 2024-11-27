@@ -6,7 +6,7 @@ from sklearn.linear_model import LogisticRegression
 
 import pickle
 
-from train import (
+from src.train import (
     load_parquet_data, split_data, find_best_solver, train,
     save_results, save_confusion_matrix, save_model,
     TEST_SIZE, RANDOM_STATE

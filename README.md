@@ -312,6 +312,8 @@ Create api to access lambda function:
     <api-endpoint>/predict
 ```
 
+The test on the `tests/endpoint_test.py` also checks the function endpoint.
+
 ### 📌 How to use this project
 
 Project variables can be found at file: `src/variables.py`.
