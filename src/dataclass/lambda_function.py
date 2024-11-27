@@ -39,9 +39,11 @@ class LambdaFunction():
             try:
                 existing_function = self.lambda_client.get_function(FunctionName=self.function_name)
                 self.logger.log.info(
-                    f"\n [INFO] Lambda function '{self.function_name}' already exists. Skipping creation. \n")
-                self.logger.log.info(f"  > Function ARN: {existing_function['Configuration']['FunctionArn']} \n")
-                return
+                    f"\n [INFO] Lambda function '{self.function_name}' already exists. \n")
+                self.logger.log.info(
+                    f"\n [INFO] Deleting a lambda function that already exists to create a new one ... \n")
+                self.clean_up()
+
             except ClientError as e:
                 self.logger.log.info(f"\n [INFO] Lambda function '{self.function_name}' does not exist. Proceeding with creation. \n")
 
