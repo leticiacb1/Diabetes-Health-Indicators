@@ -32,29 +32,30 @@ class ContainerRegistry():
         :return: None
         '''
         try:
-            response = self.ecr_client.describe_repositories(repositoryNames=[self.repository_name])
-            self.repository_arn = response['repositories'][0]['repositoryArn']
-            self.repository_uri = response['repositories'][0]['repositoryUri']
+            try:
+                response = self.ecr_client.describe_repositories(repositoryNames=[self.repository_name])
+                self.logger.log.info(f"\n [INFO]  Repository '{self.repository_name}' already exists. Skipping creation. \n ")
 
-            self.logger.log.info(f"\n [INFO]  Repository '{self.repository_name}' already exists. Skipping creation. \n ")
+                self.logger.log.info(
+                    f"\n [INFO] Deleting repository that already exists to create a new one ... \n")
+                self.clean_up()
+
+            except ClientError as e:
+                self.logger.log.info(
+                    f"\n [INFO] Repository '{self.repository_name}' does not exist. Proceeding with creation. \n")
+
+
+            response = self.ecr_client.create_repository(repositoryName=self.repository_name,
+                                                         imageScanningConfiguration={"scanOnPush": True},
+                                                         imageTagMutability="MUTABLE",
+                                                         )
+            self.repository_arn = response['repository']['repositoryArn']
+            self.repository_uri = response['repository']['repositoryUri']
+
+            self.logger.log.info(f"\n [INFO] Create a ECR repository with name {self.repository_name}. \n ")
             self.logger.log.info(f"\n [INFO] > Repository Arn : {self.repository_arn}")
             self.logger.log.info(f"\n [INFO] > Repository Uri : {self.repository_uri}")
 
-        except ClientError as e:
-            error_code = e.response["Error"]["Code"]
-            if error_code == "RepositoryNotFoundException":
-                response = self.ecr_client.create_repository(repositoryName=self.repository_name,
-                                                             imageScanningConfiguration={"scanOnPush": True},
-                                                             imageTagMutability="MUTABLE",
-                                                             )
-                self.repository_arn = response['repository']['repositoryArn']
-                self.repository_uri = response['repository']['repositoryUri']
-
-                self.logger.log.info(f"\n [INFO] Create a ECR repository with name {self.repository_name}. \n ")
-                self.logger.log.info(f"\n [INFO] > Repository Arn : {self.repository_arn}")
-                self.logger.log.info(f"\n [INFO] > Repository Uri : {self.repository_uri}")
-            else:
-                self.logger.log.error(f"\n [ERROR] Failed to create ECR repository {self.repository_name}: {e} \n")
         except Exception as e:
             self.logger.log.error(f"\n [ERROR] An unexpected error occurred: {e} \n")
 

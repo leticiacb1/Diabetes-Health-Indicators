@@ -104,8 +104,9 @@ class Gateway():
         try:
             # Check if the API already exists
             if self._api_exists(api_name):
-                self.logger.log.info(f"\n [INFO] Gateway '{self.api_name}' already exists. Skipping creation. \n")
-                return
+                self.logger.log.info(f"\n [INFO] Gateway '{self.api_name}' already exists.  \n")
+                self.logger.log.info(f"\n [INFO] Deleting repository that already exists to create a new one ...\n")
+                self.clean_up()
 
             self._get_lambda_function(function_name)
             self._set_permissions(function_name)
@@ -153,3 +154,15 @@ class Gateway():
             Target=f"integrations/{integration_response['IntegrationId']}",
         )
 
+    def clean_up(self) -> None:
+        """
+        Delete the specified API Gateway by its ID.
+
+        :return: None
+        """
+        try:
+            self.api_gateway_client.delete_api(ApiId=self.api_id)
+            self.logger.log.info(f"\n [INFO] Successfully deleted API with ID: {self.api_id} \n")
+        except Exception as e:
+            self.logger.log.error(f"\n [ERROR] Failed to delete API with ID: {self.api_id}. Error: {e} \n")
+            raise e
