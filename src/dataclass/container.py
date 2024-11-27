@@ -36,9 +36,9 @@ class ContainerRegistry():
             self.repository_arn = response['repositories'][0]['repositoryArn']
             self.repository_uri = response['repositories'][0]['repositoryUri']
 
-            self.logger.log(f"\n [INFO]  Repository '{self.repository_name}' already exists. Skipping creation. \n ")
-            self.logger.log(f"\n [INFO] > Repository Arn : {self.repository_arn}")
-            self.logger.log(f"\n [INFO] > Repository Uri : {self.repository_uri}")
+            self.logger.log.info(f"\n [INFO]  Repository '{self.repository_name}' already exists. Skipping creation. \n ")
+            self.logger.log.info(f"\n [INFO] > Repository Arn : {self.repository_arn}")
+            self.logger.log.info(f"\n [INFO] > Repository Uri : {self.repository_uri}")
 
         except ClientError as e:
             error_code = e.response["Error"]["Code"]
@@ -50,9 +50,9 @@ class ContainerRegistry():
                 self.repository_arn = response['repository']['repositoryArn']
                 self.repository_uri = response['repository']['repositoryUri']
 
-                self.logger.log(f"\n [INFO] Create a ECR repository with name {self.repository_name}. \n ")
-                self.logger.log(f"\n [INFO] > Repository Arn : {self.repository_arn}")
-                self.logger.log(f"\n [INFO] > Repository Uri : {self.repository_uri}")
+                self.logger.log.info(f"\n [INFO] Create a ECR repository with name {self.repository_name}. \n ")
+                self.logger.log.info(f"\n [INFO] > Repository Arn : {self.repository_arn}")
+                self.logger.log.info(f"\n [INFO] > Repository Uri : {self.repository_uri}")
             else:
                 self.logger.log.error(f"\n [ERROR] Failed to create ECR repository {self.repository_name}: {e} \n")
         except Exception as e:

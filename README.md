@@ -246,6 +246,72 @@ To assess whether there was data drift with the data, run:
   $ python -m src.monitoring.data_drift
 ```
 
+#### 8. ECR and Docker Image
+
+1. Test docker image locally:
+ 
+```bash
+  # Root
+  # Terminal 1
+  $ docker build --platform linux/amd64 -t <image-name>:<tag> .
+  # docker build --platform linux/amd64 -t lambda-ex-image:test .
+  
+  $ docker run -p 9500:8080 <image-name>:<tag>
+  # docker run -p 9500:8080 lambda-ex-image:test
+
+  # Root
+  # Terminal 2
+  $ curl -X POST "http://localhost:9500/2015-03-31/functions/function/invocations" \
+  -H "Content-Type: application/json" \
+  -d '{"body": "{\"health_info\": {\"HighBP\": 0.0, \"HighChol\": 1.0, \"CholCheck\": 1.0, \"BMI\": 40.0, \"Smoker\": 1.0, \"Stroke\": 0.0, \"HeartDiseaseorAttack\": 0.0, \"PhysActivity\": 0.0, \"Fruits\": 0.0, \"Veggies\": 0.0, \"HvyAlcoholConsump\": 1.0, \"AnyHealthcare\": 0.0, \"NoDocbcCost\": 1.0, \"GenHlth\": 0.0, \"MentHlth\": 5.0, \"PhysHlth\": 18.0, \"DiffWalk\": 15.0, \"Sex\": 1.0, \"Age\": 0.0, \"Education\": 9.0, \"Income\": 4.0}}"}'
+```
+2. Upload docker image in ECR container:
+
+Create repository:
+```bash
+ $ python -m src.utils.create_docker_container
+ # Repository URI: 820926566402.dkr.ecr.us-east-2.amazonaws.com/mlops-project-diabetes-ecr
+```
+
+Authenticate and login to ECR using the Docker CLI:
+```bash
+ $ aws ecr get-login-password --region <REGION> --profile mlops | docker login --username AWS --password-stdin <AWS_ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com
+ # aws ecr get-login-password --region us-east-2 --profile mlops | docker login --username AWS --password-stdin 820926566402.dkr.ecr.us-east-2.amazonaws.com
+```
+
+```bash
+ $ docker tag <image-name>:<tag> <repository-uri>:latest
+ # docker tag lambda-ex-image:test 820926566402.dkr.ecr.us-east-2.amazonaws.com/mlops-project-diabetes-ecr:latest
+ 
+ $ docker push <repository-uri>:latest
+ # docker push 820926566402.dkr.ecr.us-east-2.amazonaws.com/mlops-project-diabetes-ecr:latest
+ 
+ # Check repository content:
+ $ aws ecr describe-images --repository-name mlops-project-diabetes-ecr
+```
+
+3. Create Lambda Function from the image in ECR
+
+Create lambda function:
+
+```bash
+ $ python -m src.utils.create_lambda_function
+ # Function ARN: arn:aws:lambda:us-east-2:820926566402:function:mlops-project-diabetes-lambda-function
+```
+
+Create api to access lambda function:
+```bash
+ $ python -m src.utils.create_api
+ # API Endpoint : https://gn5battgc1.execute-api.us-east-2.amazonaws.com
+```
+4. Test endpoint
+
+```bash
+ $ curl -X POST -H "Content-Type: application/json" \
+    -d '{"health_info": {"HighBP": 0.0, "HighChol": 1.0, "CholCheck": 1.0, "BMI": 40.0, "Smoker": 1.0, "Stroke": 0.0, "HeartDiseaseorAttack": 0.0, "PhysActivity": 0.0, "Fruits": 0.0, "Veggies": 0.0, "HvyAlcoholConsump": 1.0, "AnyHealthcare": 0.0, "NoDocbcCost": 1.0, "GenHlth": 0.0, "MentHlth": 5.0, "PhysHlth": 18.0, "DiffWalk": 15.0, "Sex": 1.0, "Age": 0.0, "Education": 9.0, "Income": 4.0}}' \
+    <api-endpoint>/predict
+```
+
 ### 📌 How to use this project
 
 Project variables can be found at file: `src/variables.py`.
@@ -270,6 +336,7 @@ To run the scripts separately:
   --default-artifact-root s3://mlops-project-diabetes-tracking-bucket
  # Terminal 2
  $ python -m src.train
+ # Access MLFlow  http://localhost:5000/
 ```
 
 Run tests:

@@ -35,23 +35,37 @@ class LambdaFunction():
         :return: None
         '''
         try:
-            lambda_response = self.lambda_client.create_function(FunctionName=self.function_name,
-                                                                PackageType="Image",
-                                                                Code={"ImageUri": image_uri},
-                                                                Role=self.config.ROLE_ARN,
-                                                                Timeout=self.timeout,
-                                                                MemorySize=self.mem_size,
-                                                                )
-            self.logger.log.info(f"\n [INFO] Create Lambda Function {self.function_name} with image {image_uri} successfully \n")
-            self.logger.log.info(f'  > Function ARN Response: {lambda_response["FunctionArn"]} \n')
+            # Check if the Lambda function exists
+            try:
+                existing_function = self.lambda_client.get_function(FunctionName=self.function_name)
+                self.logger.log.info(
+                    f"\n [INFO] Lambda function '{self.function_name}' already exists. Skipping creation. \n")
+                self.logger.log.info(f"  > Function ARN: {existing_function['Configuration']['FunctionArn']} \n")
+                return
+            except ClientError as e:
+                self.logger.log.info(f"\n [INFO] Lambda function '{self.function_name}' does not exist. Proceeding with creation. \n")
+
+            # Create the Lambda function
+            lambda_response = self.lambda_client.create_function(
+                FunctionName=self.function_name,
+                PackageType="Image",
+                Code={"ImageUri": image_uri},
+                Role=self.config.ROLE_ARN,
+                Timeout=self.timeout,
+                MemorySize=self.mem_size,
+            )
+            self.logger.log.info(f"\n [INFO] Created Lambda function '{self.function_name}' successfully. \n")
+            self.logger.log.info(f"  > Function ARN: {lambda_response['FunctionArn']} \n")
+
         except ClientError as e:
             error_code = e.response['Error']['Code']
             error_message = e.response['Error']['Message']
-            self.logger.log.error(f"\n [ERROR] Failed to create Lambda function '{self.function_name}'. \n")
-            self.logger.log.error(f"  > Error Code: {error_code} \n  > Error Message: {error_message} \n")
+            self.logger.log.error(
+                f"\n [ERROR] AWS error while creating Lambda function '{self.function_name}': {error_message} \n")
+            raise e
         except Exception as e:
-            self.logger.log.error(f"\n [ERROR] Unexpected error while creating Lambda function: {str(e)} \n")
-            raise e  
+            self.logger.log.error(f"\n [ERROR] Unexpected error: {str(e)} \n")
+            raise e
 
     def check_content(self, input_data: dict) -> None:
         '''

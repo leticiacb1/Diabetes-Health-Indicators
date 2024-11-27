@@ -3,7 +3,7 @@ target_column_name = 'Diabetes_binary'
 
 logistic_regression_solvers = ['lbfgs', 'liblinear', 'newton-cg', 'newton-cholesky', 'sag', 'saga']
 
-model_path = 'models/logistic_regression.parquet'
+model_path = 'models/logistic_regression.pickle'
 confusion_matrix_path = 'results/confusion_matrix.png'
 model_metrics_path = 'results/model_test_metrics.csv'
 

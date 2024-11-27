@@ -1,6 +1,7 @@
 import json
 import pickle
 import os
+import pandas as pd
 
 def load_model(model_path: str):
     '''
@@ -18,7 +19,7 @@ def load_model(model_path: str):
     return model
 
 
-def predict(event, context):
+def run(event, context):
     '''
     AWS Lambda handler function.
     Make a prediction using the trained model.
@@ -70,16 +71,35 @@ def predict(event, context):
                 "body": json.dumps({"Error": "Invalid input: no 'health_info' key found in body."})
             }
 
+        print(f"\n [INFO] Request validado.\n")
+        print(f"\n [INFO] Request body : \n")
+        print(f"\n        > {health_info} \n")
+
         # Load the model
-        model_path = "model.pickle"
+        model_path = "logistic_regression.pickle"
         model = load_model(model_path)
+        print(f"\n [INFO] Arquivo {model_path} carregado.\n")
 
         # Predict
-        prediction = model.predict(health_info)
+        print(f"\n [INFO] Make prediction ... \n")
+
+        feature_order = [
+            "HighBP", "HighChol", "CholCheck", "BMI", "Smoker", "Stroke",
+            "HeartDiseaseorAttack", "PhysActivity", "Fruits", "Veggies",
+            "HvyAlcoholConsump", "AnyHealthcare", "NoDocbcCost", "GenHlth",
+            "MentHlth", "PhysHlth", "DiffWalk", "Sex", "Age", "Education", "Income"
+        ]
+        features = pd.DataFrame([health_info])[feature_order]
+        prediction = model.predict(features).tolist()[0]
+
+        if(prediction == 0.0):
+            condition = "no diabetes"
+        else:
+            condition = "prediabetes or diabetes"
 
         return {
             "statusCode": 200,
-            "body": json.dumps({"input": health_info,"prediction": prediction})
+            "body": json.dumps({"input": health_info,"prediction": condition})
         }
 
     except Exception as e:
