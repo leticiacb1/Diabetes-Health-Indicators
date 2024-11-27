@@ -26,13 +26,19 @@ Configure the secrets in your repository : go to the repository site on `github 
 
 Set all the secrests :
 
-* `AWS_ACCESS_KEY_ID`
+* `AWS_ACCESS_KEY_ID` (AWS credentials)
   
-* `AWS_SECRET_ACCESS_KEY`
+* `AWS_SECRET_ACCESS_KEY` (AWS credentials)
   
-* `AWS_REGION`
+* `AWS_REGION` (AWS credentials)
   
-* `AWS_LAMBDA_ROLE_ARN`
+* `AWS_LAMBDA_ROLE_ARN` (AWS credentials)
+
+* `DB_USERNAME` (MlFlow)
+
+* `DB_PASSWORD` (MlFlow)
+
+* `DB_HOST` (MlFlow)
 
 Also create a `config/.env` file with the following:
 
