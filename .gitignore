@@ -2,10 +2,6 @@
 venv/
 .env
 
-# Data
-data/*.csv
-data/*.parquet
-
 # Tracking
 mlruns/
 
