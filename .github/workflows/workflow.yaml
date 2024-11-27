@@ -79,6 +79,63 @@ jobs:
       - name: Train model
         run: python -m src.train
 
+      - run: echo " Upload generated files ..."
+      - name: Upload generated files
+        uses: actions/upload-artifact@v3
+        with:
+          name: train-data
+          path: |
+            models/logistic_regression.pickle
+            results/confusion_matrix.png
+            results/model_test_metrics.csv
+
+  monitoring:
+    needs: train
+    runs-on: ubuntu-latest
+    env:
+      AWS_LAMBDA_ROLE_ARN: ${{ secrets.AWS_LAMBDA_ROLE_ARN }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - run: echo "⚙ Install code dependencies ..."
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - run: echo " Download files generated form preprocess ..."
+      - name: Download generated files
+        uses: actions/download-artifact@v3
+        with:
+          name: preprocessed-data
+          path: ./data
+
+      - run: echo " Run data drift analysis  ..."
+      - name: Data drift
+        run: python -m src.monitoring.data_drift
+
+  predict:
+    needs: monitoring
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - run: echo " Nothing for now ..."
+
   tests:
     needs: train
     runs-on: ubuntu-latest
