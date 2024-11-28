@@ -149,7 +149,23 @@ The jupyter notebook in AWS Sagemaker with the exploratory analysis was download
 
 The `.github/workflows/workflow.yaml` folder contains the file with the pipeline sets and stages.
 
-**(In Progress ...)**
+> [!WARNING] 
+> 
+> Before any commit that triggers the pipeline is made, it is necessary to update the DVC repository
+> ```bash
+>   $ dvc status
+>   $ dvc pull
+> ```
+
+`Preprocess Stage`: Prepares data that will be used in model training
+
+`Monitoring Stage`: Monitors data that will be used by the Logistic Regression model to check if there has been any data drift
+
+`Train Stage`: Train the logistic regression model
+
+`Predict Stage`: Creates a lambda function that predicts the model. Also create an API gateway to access this function
+
+`Test Stage`: Tests the data preprocessing and model training processes and also tests whether the API is returning status 200 when requested.
 
 #### 4. Documentation
 

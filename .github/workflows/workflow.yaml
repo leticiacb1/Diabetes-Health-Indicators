@@ -146,7 +146,7 @@ jobs:
       - name: Create API Gateway
         run: | 
              python -m src.utils.create_api &
-             sleep 60
+             sleep 20
 
   tests:
     needs: predict

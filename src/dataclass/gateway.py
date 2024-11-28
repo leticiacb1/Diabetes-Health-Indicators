@@ -80,8 +80,10 @@ class Gateway():
         :return: True if the API exists, otherwise False
         '''
         try:
-            response = self.api_gateway_client.get_apis()
+            response = self.api_gateway_client.get_apis(MaxResults="5000")
+            self.logger.log.info(f"\n [INFO] Retrieved APIs: {response['Items']} \n")
             for api in response['Items']:
+                self.logger.log.info(f"Checking API Name: {api['Name']}")
                 if api['Name'] == api_name:
                     self.api_id = api['ApiId']
                     self.endpoint = api['ApiEndpoint']
@@ -92,7 +94,7 @@ class Gateway():
             self.logger.log.error(f"\n [ERROR] Failed to check if API exists: {e} \n")
             return False
 
-    def create_api(self, api_name: str, function_name: str) -> None:
+    def create_api(self, function_name: str) -> None:
         '''
         Create api with name {api_name} for lambda function with name {function_name}
 
@@ -103,16 +105,16 @@ class Gateway():
 
         try:
             # Check if the API already exists
-            if self._api_exists(api_name):
-                self.logger.log.info(f"\n [INFO] Gateway '{self.api_name}' already exists.  \n")
+            if self._api_exists(self.api_name):
+                self.logger.log.info(f"\n [INFO] Gateway '{self.api_name}' already exists.  \n  > Api_ID = {self.api_id} \n  > Api_Endpoint = {self.endpoint} \n")
                 self.logger.log.info(f"\n [INFO] Deleting repository that already exists to create a new one ...\n")
                 self.clean_up()
 
             self._get_lambda_function(function_name)
             self._set_permissions(function_name)
 
-            self.logger.log.info(f"\n [INFO] Create API with name {api_name} \n")
-            api_gateway_create = self.api_gateway_client.create_api(Name=api_name,
+            self.logger.log.info(f"\n [INFO] Create API with name {self.api_name} \n")
+            api_gateway_create = self.api_gateway_client.create_api(Name=self.api_name,
                                                                   ProtocolType=self.protocol_type,
                                                                   Version=self.version,
                                                                   RouteKey="ANY /",
