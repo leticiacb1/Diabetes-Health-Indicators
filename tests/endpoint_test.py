@@ -1,5 +1,11 @@
 import pytest
 import requests
+import boto3
+
+import os
+from dotenv import load_dotenv
+env_filename = 'config/.env'
+load_dotenv(os.path.join(os.path.dirname(__file__), env_filename))
 
 @pytest.fixture
 def sample_input():
@@ -31,11 +37,34 @@ def sample_input():
     }
     return request_body
 
+
+def get_api_endpoint_by_name(api_name, region):
+    """
+    Fetch the endpoint URL of an API Gateway by its name.
+
+    :param api_name: Name of the API Gateway
+    :param region: AWS Region
+    :return: API Gateway endpoint or None if not found
+    """
+    client = boto3.client("apigatewayv2", region_name=region)
+
+    try:
+        response = client.get_apis()
+        for api in response["Items"]:
+            if api["Name"] == api_name:
+                return api["ApiEndpoint"]
+        print(f"[INFO] API Gateway with name '{api_name}' not found.")
+        return None
+    except Exception as e:
+        print(f"[ERROR] Failed to fetch API Gateway endpoint: {e}")
+        return None
+
 def test_endpoint(sample_input):
     """Test gateway and lambda function."""
 
-    # API URL = https://<API_GATEWAY_ID>.execute-api.<REGION>.amazonaws.com/<ROUTE>
-    endpoint = "https://gn5battgc1.execute-api.us-east-2.amazonaws.com/predict"
+    region = os.getenv("AWS_REGION")
+    api_name = "mlops-project-diabetes-gateway"
+    endpoint = get_api_endpoint_by_name(api_name, region)
 
     # Make POST request to the API Gateway endpoint
     response = requests.post(endpoint, json=sample_input)
