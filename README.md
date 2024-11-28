@@ -1,4 +1,4 @@
-## 🏥 Diabetes Health Indicators
+# 🏥 Diabetes Health Indicators
 
 **Diabetes** is among the most prevalent chronic diseases in the United States, impacting millions of Americans each year and exerting a significant financial burden on the economy. 
 **Diabetes** is a serious chronic disease in which individuals lose the ability to effectively regulate levels of glucose in the blood, and can lead to reduced quality of life and life expectancy.
@@ -7,7 +7,14 @@
 
 > Download the dataset used in this project, [here](https://storage.googleapis.com/kaggle-data-sets/1703281/2789260/compressed/diabetes_binary_health_indicators_BRFSS2015.csv.zip?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=gcp-kaggle-com%40kaggle-161607.iam.gserviceaccount.com%2F20241118%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20241118T134800Z&X-Goog-Expires=259200&X-Goog-SignedHeaders=host&X-Goog-Signature=2c7aa1aba46693d3ce0644923c0968f768ae118b26566c8014a092cb8bc5943688d16f1dce02ff95922e11ff11495259e796fdc226a90a4ed8f3f8bea2c3517b0a474e57a0d3856c981bd346fa7de3da7a28c900f501c9b4afd14e4144ce7cc5049eb98c628f7316c8e983228c6596ff0ef54a1389cd1efa7fc905cc6fb92ffedc4970e35cca124129ae0c78b12dcabf9bc7636e4f97b8fecf5e6f58c8c09c98ebfe7341a7cd7c4b29ed094ca506bb533284b9fd4a54738918a57593cee8b11d5a26bf970289991ac86cec9b40a4cdebb39984211c9c25bb2d8c38d18fe91b458e0d45fc5dfb54b2e0eb2759afe6dee5f2722ac9f75e41e17b266824bf8d5daa)
 
-### ⚙ Dependencies
+### Table of contents
+1. [Dependencies](#dependencies)
+2. [How to use this project](#paragraph1)
+    1. [Sub paragraph](#subparagraph1)
+3. [Another paragraph](#paragraph2)
+
+
+## ⚙ Dependencies <a name="dependencies"></a>
 
 Create a `venv` and install dependencies:
 
@@ -56,11 +63,47 @@ Configure your AWS credentials:
     aws configure
 ```
 
-### 📌 How this project was build
+## 📌 How to use this project
 
-#### 1. Data Versioning
+Project variables can be found at file: `src/variables.py`.
 
-**Upload the dataset file in a S3 Bucket**
+To run the scripts locally:
+
+```bash
+ # Root folder 
+ $ python -m src.preprocess
+```
+
+```bash
+ # Root folder 
+ # Terminal 1
+ $ mlflow server --backend-store-uri postgresql://USERNAME:PASSWORD@HOST:5432/mlops_project_diabetes_db \
+  --default-artifact-root s3://mlops-project-diabetes-tracking-bucket
+ # Terminal 2
+ $ python -m src.train
+ # Access MLFlow  http://localhost:5000/
+```
+
+Test the deployed API :
+
+```bash 
+ $ curl -X POST -H "Content-Type: application/json" \
+    -d '{"health_info": {"HighBP": 0.0, "HighChol": 1.0, "CholCheck": 1.0, "BMI": 40.0, "Smoker": 1.0, "Stroke": 0.0, "HeartDiseaseorAttack": 0.0, "PhysActivity": 0.0, "Fruits": 0.0, "Veggies": 0.0, "HvyAlcoholConsump": 1.0, "AnyHealthcare": 0.0, "NoDocbcCost": 1.0, "GenHlth": 0.0, "MentHlth": 5.0, "PhysHlth": 18.0, "DiffWalk": 15.0, "Sex": 1.0, "Age": 0.0, "Education": 9.0, "Income": 4.0}}' \
+    <api-endpoint>/predict
+```
+
+Run tests:
+```bash
+ # Root folder
+ $  pytest
+```
+
+
+## 👩🏼‍💻 Describing the construction of the project
+
+### 1. Data Versioning
+
+#### 1.1 Upload the dataset file in a S3 Bucket
 
 ```bash
    # With .csv inside data folder
@@ -80,7 +123,7 @@ After this the URL of the file upload is : `https://<bucket-name>.s3.<region>.am
   $ curl -O https://mlops-project-diabetes-data-bucket.s3.us-east-2.amazonaws.com/diabetes_binary_health_indicators_BRFSS2015.csv
 ```
 
-**Configure data versioning - [DVC](https://dvc.org/)**
+#### 1.2 Configure data versioning - [DVC](https://dvc.org/)
 
 ```bash
  # Init dvc repository
@@ -124,7 +167,7 @@ Add S3 in dvc:
   $ dvc pull # Check the file data/diabetes_data.csv been restaured
 ```
 
-#### 2. Sagemaker (Exploratory Analysis)
+### 2. Sagemaker (Exploratory Analysis)
 
 Create a notebook instance to use :
 
@@ -145,7 +188,7 @@ For this project, the notebooks are in : https://mlops-project-diabetes-exp-note
 
 The jupyter notebook in AWS Sagemaker with the exploratory analysis was downloaded to the `src/notebooks` folder.
 
-#### 3. Configure CI-CD (Github workflows)
+### 3. Configure CI-CD (Github workflows)
 
 The `.github/workflows/workflow.yaml` folder contains the file with the pipeline sets and stages.
 
@@ -167,7 +210,7 @@ The `.github/workflows/workflow.yaml` folder contains the file with the pipeline
 
 `Test Stage`: Tests the data preprocessing and model training processes and also tests whether the API is returning status 200 when requested.
 
-#### 4. Documentation
+### 4. Documentation
 
 **Sphinx**  generate auto documentation for the project. 
 
@@ -178,7 +221,7 @@ The `.github/workflows/workflow.yaml` folder contains the file with the pipeline
 
 To access the project documentation open the file : `docs/_build/html/index.html`
 
-#### 5. Logging (S3 Bucket)
+### 5. Logging (S3 Bucket)
 
 All project logs are stored within an **S3 bucket**.
 
@@ -198,9 +241,9 @@ Buckets storing project log information:
   * **key = mlops-project-diabetes-train-logs** 
   * **logger_name = train_logger** 
 
-#### 6. Tracking (MlFlow)
+### 6. Tracking (MlFlow)
 
-**Centralization**
+#### 6.1 Centralization
 
 Information about the model is saved so that everyone can see it.
 
@@ -210,7 +253,7 @@ Information about the model is saved so that everyone can see it.
                     |_ML_Model_Code_|
 ```  
 
-1. Database created with name = **mlops_project_diabetes_db**
+##### 6.1.a Database created with name = **mlops_project_diabetes_db
 
 In a postgres script run:
 
@@ -219,7 +262,7 @@ CREATE DATABASE mlops_project_diabetes_db;
 SELECT datname FROM pg_database; -- Expected the database name
 ```
 
-2. Bucket create with name = **mlops-project-diabetes-tracking-bucket**
+##### 6.1.b Bucket create with name = **mlops-project-diabetes-tracking-bucket
 
 ```bash
   $ aws s3api create-bucket --bucket mlops-project-diabetes-tracking-bucket \
@@ -230,7 +273,7 @@ SELECT datname FROM pg_database; -- Expected the database name
   $ aws s3 ls
 ```
 
-3. Run MlFlow server to use information from Database and the S3 bucket created:
+##### 6.1.c Run MlFlow server to use information from Database and the S3 bucket created
 
 ```bash
   # Terminal 1
@@ -248,7 +291,7 @@ In another terminal run the training:
   $ python -m src.train
 ```
 
-**Model Registry**
+#### 6.2 Model Registry
 
 Run a specific model version locally using Docker:
 ```bash
@@ -259,7 +302,7 @@ Run a specific model version locally using Docker:
   # In another terminal you can make requests passing a new data and receiving the prediction
 ```
 
-#### 7. Monitoring (data drift)
+### 7. Monitoring (Data Drift)
 
 To assess whether there was data drift with the data, run:
 
@@ -268,9 +311,9 @@ To assess whether there was data drift with the data, run:
   $ python -m src.monitoring.data_drift
 ```
 
-#### 8. ECR and Docker Image
+### 8. ECR and Docker Image
 
-1. Test docker image locally:
+#### 8.1 Test docker image locally:
  
 ```bash
   # Root
@@ -287,7 +330,7 @@ To assess whether there was data drift with the data, run:
   -H "Content-Type: application/json" \
   -d '{"body": "{\"health_info\": {\"HighBP\": 0.0, \"HighChol\": 1.0, \"CholCheck\": 1.0, \"BMI\": 40.0, \"Smoker\": 1.0, \"Stroke\": 0.0, \"HeartDiseaseorAttack\": 0.0, \"PhysActivity\": 0.0, \"Fruits\": 0.0, \"Veggies\": 0.0, \"HvyAlcoholConsump\": 1.0, \"AnyHealthcare\": 0.0, \"NoDocbcCost\": 1.0, \"GenHlth\": 0.0, \"MentHlth\": 5.0, \"PhysHlth\": 18.0, \"DiffWalk\": 15.0, \"Sex\": 1.0, \"Age\": 0.0, \"Education\": 9.0, \"Income\": 4.0}}"}'
 ```
-2. Upload docker image in ECR container:
+#### 8.2 Upload docker image in ECR container:
 
 Create repository:
 ```bash
@@ -312,7 +355,7 @@ Authenticate and login to ECR using the Docker CLI:
  $ aws ecr describe-images --repository-name mlops-project-diabetes-ecr
 ```
 
-3. Create Lambda Function from the image in ECR
+#### 8.3 Create Lambda Function from the image in ECR
 
 Create lambda function:
 
@@ -326,7 +369,7 @@ Create api to access lambda function:
  $ python -m src.utils.create_api
  # API Endpoint : https://gn5battgc1.execute-api.us-east-2.amazonaws.com
 ```
-4. Test endpoint
+#### 8.4 Test endpoint
 
 ```bash
  $ curl -X POST -H "Content-Type: application/json" \
@@ -336,46 +379,6 @@ Create api to access lambda function:
 
 The test on the `tests/endpoint_test.py` also checks the function endpoint.
 
-### 📌 How to use this project
-
-Project variables can be found at file: `src/variables.py`.
-
-Make sure your data folder is up to date with dvc:
-```bash
- $ dvc status
- $ dvc pull
-```
-
-To run the scripts separately:
-
-```bash
- # Root folder 
- $ python -m src.preprocess
-```
-
-```bash
- # Root folder 
- # Terminal 1
- $ mlflow server --backend-store-uri postgresql://USERNAME:PASSWORD@HOST:5432/mlops_project_diabetes_db \
-  --default-artifact-root s3://mlops-project-diabetes-tracking-bucket
- # Terminal 2
- $ python -m src.train
- # Access MLFlow  http://localhost:5000/
-```
-
-With step **8. ECR and Docker Image** done, is possible to access de predict function by api gateway:
-
-```bash 
- $ curl -X POST -H "Content-Type: application/json" \
-    -d '{"health_info": {"HighBP": 0.0, "HighChol": 1.0, "CholCheck": 1.0, "BMI": 40.0, "Smoker": 1.0, "Stroke": 0.0, "HeartDiseaseorAttack": 0.0, "PhysActivity": 0.0, "Fruits": 0.0, "Veggies": 0.0, "HvyAlcoholConsump": 1.0, "AnyHealthcare": 0.0, "NoDocbcCost": 1.0, "GenHlth": 0.0, "MentHlth": 5.0, "PhysHlth": 18.0, "DiffWalk": 15.0, "Sex": 1.0, "Age": 0.0, "Education": 9.0, "Income": 4.0}}' \
-    <api-endpoint>/predict
-```
-
-Run tests:
-```bash
- # Root folder
- $  pytest
-```
 
 <div align="center">
     <br>
