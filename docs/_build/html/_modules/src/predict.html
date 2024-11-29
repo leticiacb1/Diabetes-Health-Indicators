@@ -1,0 +1,213 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.predict &mdash; Diabetes Health Indicators v1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=76e2d817"></script>
+      <script src="../../_static/doctools.js?v=888ff710"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Diabetes Health Indicators
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Diabetes Health Indicators</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">src.predict</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for src.predict</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<div class="viewcode-block" id="load_model">
+<a class="viewcode-back" href="../../src.html#src.predict.load_model">[docs]</a>
+<span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="n">model_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Load a trained model from a pickle file.</span>
+
+<span class="sd">    :param model_path: path to the model pickle file.</span>
+<span class="sd">    :return: loaded model</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">model_path</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> [ERROR] Model file not found: </span><span class="si">{</span><span class="n">model_path</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">model_file</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">model_file</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">model</span></div>
+
+
+
+<div class="viewcode-block" id="run">
+<a class="viewcode-back" href="../../src.html#src.predict.run">[docs]</a>
+<span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    AWS Lambda handler function.</span>
+<span class="sd">    Make a prediction using the trained model.</span>
+
+<span class="sd">    :param event: object containing the input data</span>
+<span class="sd">                  Expect the input to have a health_info key:</span>
+<span class="sd">                    &quot;health_info&quot; : {</span>
+<span class="sd">                                 &quot;HighBP&quot;: ,</span>
+<span class="sd">                                 &quot;HighChol&quot;: ,</span>
+<span class="sd">                                 &quot;CholCheck&quot;:,</span>
+<span class="sd">                                 &quot;BMI&quot;: ,</span>
+<span class="sd">                                 &quot;Smoker&quot;: ,</span>
+<span class="sd">                                 &quot;Stroke&quot;: ,</span>
+<span class="sd">                                 &quot;HeartDiseaseorAttack&quot;: ,</span>
+<span class="sd">                                 &quot;PhysActivity&quot;: ,</span>
+<span class="sd">                                 &quot;Fruits&quot;: ,</span>
+<span class="sd">                                 &quot;Veggies&quot; ,</span>
+<span class="sd">                                 &quot;HvyAlcoholConsump&quot;:,</span>
+<span class="sd">                                 &quot;AnyHealthcare&quot;:,</span>
+<span class="sd">                                 &quot;NoDocbcCost&quot;:,</span>
+<span class="sd">                                 &quot;GenHlth&quot;:,</span>
+<span class="sd">                                 &quot;MentHlth&quot;:,</span>
+<span class="sd">                                 &quot;PhysHlth&quot;:,</span>
+<span class="sd">                                 &quot;DiffWalk&quot;:,</span>
+<span class="sd">                                 &quot;Sex&quot;:,</span>
+<span class="sd">                                 &quot;Age&quot;:,</span>
+<span class="sd">                                 &quot;Education&quot;: ,</span>
+<span class="sd">                                 &quot;Income&quot;:</span>
+<span class="sd">                                }</span>
+
+<span class="sd">    :param context: AWS Lambda context object</span>
+<span class="sd">    :return: prediction result</span>
+<span class="sd">             (0.0 - no diabetes or 1.0 - prediabetes or diabetes)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Validate request</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;body&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">body</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;statusCode&quot;</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span>
+                <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&quot;Error&quot;</span><span class="p">:</span> <span class="s2">&quot;Invalid input: no body found.&quot;</span><span class="p">})</span>
+            <span class="p">}</span>
+
+        <span class="n">json_body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+        <span class="n">health_info</span> <span class="o">=</span> <span class="n">json_body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;health_info&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">health_info</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;statusCode&quot;</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span>
+                <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&quot;Error&quot;</span><span class="p">:</span> <span class="s2">&quot;Invalid input: no &#39;health_info&#39; key found in body.&quot;</span><span class="p">})</span>
+            <span class="p">}</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> [INFO] Request validado.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> [INFO] Request body : </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">        &gt; </span><span class="si">{</span><span class="n">health_info</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Load the model</span>
+        <span class="n">model_path</span> <span class="o">=</span> <span class="s2">&quot;logistic_regression.pickle&quot;</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> [INFO] Arquivo </span><span class="si">{</span><span class="n">model_path</span><span class="si">}</span><span class="s2"> carregado.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Predict</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> [INFO] Make prediction ... </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">feature_order</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;HighBP&quot;</span><span class="p">,</span> <span class="s2">&quot;HighChol&quot;</span><span class="p">,</span> <span class="s2">&quot;CholCheck&quot;</span><span class="p">,</span> <span class="s2">&quot;BMI&quot;</span><span class="p">,</span> <span class="s2">&quot;Smoker&quot;</span><span class="p">,</span> <span class="s2">&quot;Stroke&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;HeartDiseaseorAttack&quot;</span><span class="p">,</span> <span class="s2">&quot;PhysActivity&quot;</span><span class="p">,</span> <span class="s2">&quot;Fruits&quot;</span><span class="p">,</span> <span class="s2">&quot;Veggies&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;HvyAlcoholConsump&quot;</span><span class="p">,</span> <span class="s2">&quot;AnyHealthcare&quot;</span><span class="p">,</span> <span class="s2">&quot;NoDocbcCost&quot;</span><span class="p">,</span> <span class="s2">&quot;GenHlth&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;MentHlth&quot;</span><span class="p">,</span> <span class="s2">&quot;PhysHlth&quot;</span><span class="p">,</span> <span class="s2">&quot;DiffWalk&quot;</span><span class="p">,</span> <span class="s2">&quot;Sex&quot;</span><span class="p">,</span> <span class="s2">&quot;Age&quot;</span><span class="p">,</span> <span class="s2">&quot;Education&quot;</span><span class="p">,</span> <span class="s2">&quot;Income&quot;</span>
+        <span class="p">]</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">health_info</span><span class="p">])[</span><span class="n">feature_order</span><span class="p">]</span>
+        <span class="n">prediction</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">features</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">prediction</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">):</span>
+            <span class="n">condition</span> <span class="o">=</span> <span class="s2">&quot;no diabetes&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">condition</span> <span class="o">=</span> <span class="s2">&quot;prediabetes or diabetes&quot;</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;statusCode&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="n">health_info</span><span class="p">,</span><span class="s2">&quot;prediction&quot;</span><span class="p">:</span> <span class="n">condition</span><span class="p">})</span>
+        <span class="p">}</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;statusCode&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
+            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&quot;Error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)})</span>
+        <span class="p">}</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Leticia Coelho e Lorran Lopes.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

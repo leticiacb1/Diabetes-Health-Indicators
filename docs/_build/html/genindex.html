@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; Diabetes Health Indicators Project 0.0.1 documentation</title>
+  <title>Index &mdash; Diabetes Health Indicators v1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/documentation_options.js?v=76e2d817"></script>
       <script src="_static/doctools.js?v=888ff710"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -29,7 +29,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            Diabetes Health Indicators Project
+            Diabetes Health Indicators
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -47,7 +47,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Diabetes Health Indicators Project</a>
+          <a href="index.html">Diabetes Health Indicators</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -80,7 +80,7 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="train.html#train.find_best_solver">find_best_solver() (in module train)</a>
+      <li><a href="src.html#src.train.find_best_solver">find_best_solver() (in module src.train)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -88,7 +88,11 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="train.html#train.load_parquet_data">load_parquet_data() (in module train)</a>
+      <li><a href="src.html#src.predict.load_model">load_model() (in module src.predict)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src.html#src.train.load_parquet_data">load_parquet_data() (in module src.train)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -100,9 +104,15 @@
     module
 
       <ul>
-        <li><a href="preprocess.html#module-preprocess">preprocess</a>
+        <li><a href="src.html#module-src">src</a>
 </li>
-        <li><a href="train.html#module-train">train</a>
+        <li><a href="src.html#module-src.predict">src.predict</a>
+</li>
+        <li><a href="src.html#module-src.preprocess">src.preprocess</a>
+</li>
+        <li><a href="src.html#module-src.train">src.train</a>
+</li>
+        <li><a href="src.html#module-src.variables">src.variables</a>
 </li>
       </ul></li>
   </ul></td>
@@ -111,16 +121,7 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li>
-    preprocess
-
-      <ul>
-        <li><a href="preprocess.html#module-preprocess">module</a>
-</li>
-      </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="preprocess.html#preprocess.preprocess">preprocess() (in module preprocess)</a>
+      <li><a href="src.html#src.preprocess.preprocess">preprocess() (in module src.preprocess)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -128,7 +129,11 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="preprocess.html#preprocess.remove_duplicate_lines">remove_duplicate_lines() (in module preprocess)</a>
+      <li><a href="src.html#src.preprocess.remove_duplicate_lines">remove_duplicate_lines() (in module src.preprocess)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src.html#src.predict.run">run() (in module src.predict)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -136,34 +141,60 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="train.html#train.save_confusion_matrix">save_confusion_matrix() (in module train)</a>
+      <li><a href="src.html#src.train.save_confusion_matrix">save_confusion_matrix() (in module src.train)</a>
 </li>
-      <li><a href="train.html#train.save_model">save_model() (in module train)</a>
+      <li><a href="src.html#src.train.save_model">save_model() (in module src.train)</a>
 </li>
+      <li><a href="src.html#src.preprocess.save_parquet">save_parquet() (in module src.preprocess)</a>
+</li>
+      <li><a href="src.html#src.train.save_results">save_results() (in module src.train)</a>
+</li>
+      <li><a href="src.html#src.train.split_data">split_data() (in module src.train)</a>
+</li>
+      <li>
+    src
+
+      <ul>
+        <li><a href="src.html#module-src">module</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="preprocess.html#preprocess.save_parquet">save_parquet() (in module preprocess)</a>
+      <li>
+    src.predict
+
+      <ul>
+        <li><a href="src.html#module-src.predict">module</a>
 </li>
-      <li><a href="train.html#train.save_results">save_results() (in module train)</a>
+      </ul></li>
+      <li>
+    src.preprocess
+
+      <ul>
+        <li><a href="src.html#module-src.preprocess">module</a>
 </li>
-      <li><a href="train.html#train.split_data">split_data() (in module train)</a>
+      </ul></li>
+      <li>
+    src.train
+
+      <ul>
+        <li><a href="src.html#module-src.train">module</a>
 </li>
+      </ul></li>
+      <li>
+    src.variables
+
+      <ul>
+        <li><a href="src.html#module-src.variables">module</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li>
-    train
-
-      <ul>
-        <li><a href="train.html#module-train">module</a>
-</li>
-      </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="train.html#train.train">train() (in module train)</a>
+      <li><a href="src.html#src.train.train">train() (in module src.train)</a>
 </li>
   </ul></td>
 </tr></table>

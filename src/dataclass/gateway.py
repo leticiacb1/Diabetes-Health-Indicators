@@ -81,9 +81,7 @@ class Gateway():
         '''
         try:
             response = self.api_gateway_client.get_apis(MaxResults="5000")
-            self.logger.log.info(f"\n [INFO] Retrieved APIs: {response['Items']} \n")
             for api in response['Items']:
-                self.logger.log.info(f"Checking API Name: {api['Name']}")
                 if api['Name'] == api_name:
                     self.api_id = api['ApiId']
                     self.endpoint = api['ApiEndpoint']

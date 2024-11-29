@@ -1,10 +1,10 @@
-.. Diabetes Health Indicators Project documentation master file, created by
-   sphinx-quickstart on Tue Nov 19 21:17:48 2024.
+.. Diabetes Health Indicators documentation master file, created by
+   sphinx-quickstart on Fri Nov 29 12:48:45 2024.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Diabetes Health Indicators Project's documentation!
-==============================================================
+Welcome to Diabetes Health Indicators's documentation!
+======================================================
 
 .. toctree::
    :maxdepth: 2

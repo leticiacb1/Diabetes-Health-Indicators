@@ -82,7 +82,15 @@ Configure your AWS credentials:
 
 Project variables can be found at file: `src/variables.py`.
 
-To run the scripts locally:
+To update the data, remember to run:
+
+```bash
+ # Root folder 
+ $ dvc status
+ $ dvc pull
+```
+
+If you want to run the data preprocessing and model training scripts locally:
 
 ```bash
  # Root folder 
@@ -99,7 +107,8 @@ To run the scripts locally:
  # Access MLFlow  http://localhost:5000/
 ```
 
-Test the deployed API :
+To create a new Lambda function, with an updated predict function, you need to follow the steps described [ECR and Docker Image](#ecr-docker).
+To test the version of the API that we already have deployed, run:
 
 ```bash 
  $ curl -X POST -H "Content-Type: application/json" \
@@ -108,11 +117,11 @@ Test the deployed API :
 ```
 
 Run tests:
+
 ```bash
  # Root folder
  $  pytest
 ```
-
 
 ## 👩🏼‍💻 Describing the construction of the project <a name="describe"></a>
 
@@ -231,6 +240,9 @@ The `.github/workflows/workflow.yaml` folder contains the file with the pipeline
 
 ```bash
   # If any change on docs/ folder rebuild the documentation:
+  $ rm -rf build/
+  $ export PYTHONPATH=$(pwd)/src
+  $ sphinx-apidoc -f -o ./ ../src/
   $ cd docs/ && make html 
 ```
 

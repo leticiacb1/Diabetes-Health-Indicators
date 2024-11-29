@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>src &mdash; Diabetes Health Indicators Project 0.0.1 documentation</title>
+  <title>src &mdash; Diabetes Health Indicators v1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/documentation_options.js?v=76e2d817"></script>
       <script src="_static/doctools.js?v=888ff710"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -30,7 +30,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            Diabetes Health Indicators Project
+            Diabetes Health Indicators
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -51,7 +51,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Diabetes Health Indicators Project</a>
+          <a href="index.html">Diabetes Health Indicators</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -73,20 +73,31 @@
 <h1>src<a class="headerlink" href="#src" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="preprocess.html">preprocess module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="preprocess.html#preprocess.preprocess"><code class="docutils literal notranslate"><span class="pre">preprocess()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="preprocess.html#preprocess.remove_duplicate_lines"><code class="docutils literal notranslate"><span class="pre">remove_duplicate_lines()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="preprocess.html#preprocess.save_parquet"><code class="docutils literal notranslate"><span class="pre">save_parquet()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="src.html">src package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="src.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.html#module-src.predict">src.predict module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="src.html#src.predict.load_model"><code class="docutils literal notranslate"><span class="pre">load_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="src.html#src.predict.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="train.html">train module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="train.html#train.find_best_solver"><code class="docutils literal notranslate"><span class="pre">find_best_solver()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="train.html#train.load_parquet_data"><code class="docutils literal notranslate"><span class="pre">load_parquet_data()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="train.html#train.save_confusion_matrix"><code class="docutils literal notranslate"><span class="pre">save_confusion_matrix()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="train.html#train.save_model"><code class="docutils literal notranslate"><span class="pre">save_model()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="train.html#train.save_results"><code class="docutils literal notranslate"><span class="pre">save_results()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="train.html#train.split_data"><code class="docutils literal notranslate"><span class="pre">split_data()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="train.html#train.train"><code class="docutils literal notranslate"><span class="pre">train()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.html#module-src.preprocess">src.preprocess module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="src.html#src.preprocess.preprocess"><code class="docutils literal notranslate"><span class="pre">preprocess()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="src.html#src.preprocess.remove_duplicate_lines"><code class="docutils literal notranslate"><span class="pre">remove_duplicate_lines()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="src.html#src.preprocess.save_parquet"><code class="docutils literal notranslate"><span class="pre">save_parquet()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.html#module-src.train">src.train module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="src.html#src.train.find_best_solver"><code class="docutils literal notranslate"><span class="pre">find_best_solver()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="src.html#src.train.load_parquet_data"><code class="docutils literal notranslate"><span class="pre">load_parquet_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="src.html#src.train.save_confusion_matrix"><code class="docutils literal notranslate"><span class="pre">save_confusion_matrix()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="src.html#src.train.save_model"><code class="docutils literal notranslate"><span class="pre">save_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="src.html#src.train.save_results"><code class="docutils literal notranslate"><span class="pre">save_results()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="src.html#src.train.split_data"><code class="docutils literal notranslate"><span class="pre">split_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="src.html#src.train.train"><code class="docutils literal notranslate"><span class="pre">train()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.html#module-src.variables">src.variables module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.html#module-src">Module contents</a></li>
 </ul>
 </li>
 </ul>
